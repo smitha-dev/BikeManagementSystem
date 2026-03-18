@@ -1,0 +1,104 @@
+﻿<!--
+Window: MaintenanceHistory
+Purpose: Record damage and repair details for a bike.
+-->
+
+<Window
+    x:Class="FindlayBikeShop.MaintenanceHistory"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:FindlayBikeShop"
+    mc:Ignorable="d"
+    Title="Maintenance Record"
+    Height="400"
+    Width="600"
+    WindowStartupLocation="CenterScreen">
+
+    <Grid Margin="10">
+
+        <!-- ========================= -->
+        <!-- GRID LAYOUT               -->
+        <!-- ========================= -->
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+
+
+        <!-- DAMAGE PHOTO -->
+        <Border
+            BorderBrush="LightGray"
+            BorderThickness="1"
+            Padding="10"
+            Margin="0,0,10,0">
+
+            <StackPanel>
+
+                <Image
+                    Height="200"
+                    Stretch="Uniform"/>
+
+                <Button
+                    Content="Upload Photo"
+                    Width="120"
+                    Margin="0,10,0,0"/>
+
+                <!--
+                TODO: Implement photo upload and storage
+                Notes: Photo should attach to this maintenance record
+                -->
+
+            </StackPanel>
+
+        </Border>
+
+
+        <!-- DAMAGE DETAILS -->
+        <StackPanel Grid.Column="1">
+
+            <TextBlock
+                Text="Description of damage:"
+                FontWeight="Bold"
+                Margin="0,0,0,5"/>
+
+            <TextBox
+                Height="120"
+                TextWrapping="Wrap"
+                AcceptsReturn="True"/>
+
+            <TextBlock
+                Text="Cost to repair:"
+                FontWeight="Bold"
+                Margin="0,15,0,5"/>
+
+            <TextBox Width="120"/>
+
+        </StackPanel>
+
+
+        <!-- MARK FIXED BUTTON -->
+        <Button
+            Content="Mark as fixed"
+            Grid.Row="1"
+            Grid.ColumnSpan="2"
+            Width="140"
+            Height="30"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"/>
+
+        <!--
+        TODO: Mark maintenance record as completed
+        Notes: Should update bike Status back to "Available"
+        -->
+
+    </Grid>
+
+</Window>
