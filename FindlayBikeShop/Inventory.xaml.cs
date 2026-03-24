@@ -31,5 +31,12 @@ namespace FindlayBikeShop
             inventoryWindow.Show();
             this.Close();
         }
+        private void AddBike_Click(object sender, RoutedEventArgs e)
+        {
+            var addBikeWindow = new AddBike();
+            addBikeWindow.ShowDialog();
+        }
     }
+
+
 }
