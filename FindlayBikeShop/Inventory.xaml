@@ -17,8 +17,7 @@ Future Work:
     mc:Ignorable="d"
     Title="Findlay Bike Management System [Inventory]"
     Height="510"
-    Width="800"
-    WindowStartupLocation="CenterScreen">
+    Width="800">
 
     <Grid Margin="10">
 
@@ -82,8 +81,7 @@ Future Work:
                                 Margin="0,0,12,0"
                                 Stretch="UniformToFill"
                                 Source="{Binding Photo}"
-                                d:Source="https://www.prioritybicycles.com/cdn/shop/files/600_hero_May2024_1of1.jpg"/>
-                            <!-- placeholder image -->
+                                d:Source="https://www.prioritybicycles.com/cdn/shop/files/600_hero_May2024_1of1.jpg"/> <!-- placeholder image -->
 
 
                             <!-- BIKE DETAILS -->

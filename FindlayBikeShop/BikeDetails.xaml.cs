@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Data.Sqlite;
-
+using System.Collections.Generic;
 
 namespace FindlayBikeShop
 {
@@ -21,11 +21,9 @@ namespace FindlayBikeShop
     /// </summary>
     public partial class BikeDetails : Window
     {
-        public BikeDetails(Bike bike)
+        public BikeDetails()
         {
             InitializeComponent();
-
-            this.DataContext = bike;
         }
 
 
@@ -43,23 +41,5 @@ namespace FindlayBikeShop
             this.Close();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-
-            var maintenanceWindow = new MaintenanceHistory();
-            maintenanceWindow.Show();
-            this.Close();
-        }
-
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
-        private void ListBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
     }
 }

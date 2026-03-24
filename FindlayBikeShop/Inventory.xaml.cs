@@ -3,6 +3,9 @@ using System.Windows;
 using System.Windows.Media;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Media;
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 

@@ -13,8 +13,7 @@ Purpose: Displays detailed information about a specific bike.
     mc:Ignorable="d"
     Title="Bike Details"
     Height="510"
-    Width="800"
-    WindowStartupLocation="CenterScreen">
+    Width="800">
 
     <Grid Margin="10">
 
@@ -107,7 +106,7 @@ Purpose: Displays detailed information about a specific bike.
             Grid.Column="0"
             Margin="0,0,10,5">
 
-            <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" SelectionChanged="ListBox_SelectionChanged"/>
+            <ListBox d:ItemsSource="{d:SampleData ItemCount=5}"/>
 
             <!--
             TODO: Display maintenance records for this bike
@@ -123,7 +122,7 @@ Purpose: Displays detailed information about a specific bike.
             Grid.Column="1"
             Margin="0,0,0,5">
 
-            <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" SelectionChanged="ListBox_SelectionChanged_1"/>
+            <ListBox d:ItemsSource="{d:SampleData ItemCount=5}"/>
 
             <!--
             TODO: Show past rentals for this bike
@@ -138,7 +137,7 @@ Purpose: Displays detailed information about a specific bike.
             Grid.Row="3"
             Grid.Column="0"
             Width="150"
-            HorizontalAlignment="Center" Click="Button_Click"/>
+            HorizontalAlignment="Center"/>
 
         <Button
             Content="Edit History"
