@@ -49,7 +49,6 @@ namespace FindlayBikeShop
 
             var maintenanceWindow = new MaintenanceHistory();
             maintenanceWindow.Show();
-            this.Close();
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

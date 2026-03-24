@@ -27,8 +27,9 @@ Future Work:
         <!-- ========================= -->
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- ========================= -->
@@ -95,23 +96,23 @@ Future Work:
 
                                 <TextBlock
                                     FontWeight="Bold"
-                                    Text="{Binding Id}"
+                                    Text="{Binding BikeID, StringFormat='Bike ID: {0}'}"
                                     d:Text="Bike ID: 101"/>
 
                                 <TextBlock
-                                    Text="{Binding Size}"
+                                    Text="{Binding Brand, StringFormat='Brand: {0}'}"
                                     d:Text="Size: Medium"/>
 
                                 <TextBlock
-                                    Text="{Binding Weight}"
+                                    Text="{Binding Size, StringFormat='Size: {0}'}"
                                     d:Text="Seat Height: 30in"/>
 
                                 <TextBlock
-                                    Text="{Binding Color}"
+                                    Text="{Binding Color, StringFormat='Color: {0}'}"
                                     d:Text="Color: Black"/>
 
                                 <TextBlock
-                                    Text="{Binding Status}"
+                                    Text="{Binding Status, StringFormat='Status: {0}'}"
                                     d:Text="Status: Available"/>
 
 
@@ -137,6 +138,16 @@ Future Work:
             </ListView.ItemTemplate>
 
         </ListView>
+
+        <Button
+            Content="Add Bike"
+            Width="100"
+            Height="30"
+            Margin="0,10,0,0"
+            Grid.Row="2"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Click="AddBike_Click"/>
 
     </Grid>
 
