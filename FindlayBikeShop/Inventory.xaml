@@ -96,23 +96,23 @@ Future Work:
 
                                 <TextBlock
                                     FontWeight="Bold"
-                                    Text="{Binding BikeID}"
+                                    Text="{Binding BikeID, StringFormat='Bike ID: {0}'}"
                                     d:Text="Bike ID: 101"/>
 
                                 <TextBlock
-                                    Text="{Binding Size}"
+                                    Text="{Binding Brand, StringFormat='Brand: {0}'}"
                                     d:Text="Size: Medium"/>
 
                                 <TextBlock
-                                    Text="{Binding Weight}"
+                                    Text="{Binding Size, StringFormat='Size: {0}'}"
                                     d:Text="Seat Height: 30in"/>
 
                                 <TextBlock
-                                    Text="{Binding Color}"
+                                    Text="{Binding Color, StringFormat='Color: {0}'}"
                                     d:Text="Color: Black"/>
 
                                 <TextBlock
-                                    Text="{Binding Status}"
+                                    Text="{Binding Status, StringFormat='Status: {0}'}"
                                     d:Text="Status: Available"/>
 
 

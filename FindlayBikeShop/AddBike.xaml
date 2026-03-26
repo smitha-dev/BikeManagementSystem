@@ -17,6 +17,7 @@
 
         <!-- HEADER -->
         <TextBlock
+            x:Name="BikeHeader"
             Text="Add New Bike"
             FontSize="18"
             FontWeight="Bold"

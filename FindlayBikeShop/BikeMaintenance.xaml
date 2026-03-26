@@ -43,13 +43,15 @@ Purpose: Record damage and repair details for a bike.
             <StackPanel>
 
                 <Image
+                    x:Name="DamagePhoto"
                     Height="200"
                     Stretch="Uniform"/>
 
                 <Button
                     Content="Upload Photo"
                     Width="120"
-                    Margin="0,10,0,0"/>
+                    Margin="0,10,0,0"
+                    Click="UploadPhoto_Click"/>
 
                 <!--
                 TODO: Implement photo upload and storage

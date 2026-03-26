@@ -21,9 +21,17 @@ namespace FindlayBikeShop
     /// </summary>
     public partial class BikeDetails : Window
     {
+
+        private string connectionString = "Data Source=BikeDatabase.db";
+
+        // store the selected bike that is being displayed (used for passing to edit window)
+        private Bike currentBike;
+
         public BikeDetails(Bike bike)
         {
             InitializeComponent();
+
+            currentBike = bike;
 
             this.DataContext = bike;
         }
@@ -49,6 +57,17 @@ namespace FindlayBikeShop
 
             var maintenanceWindow = new MaintenanceHistory();
             maintenanceWindow.Show();
+        }
+
+        private void EditDetails_Click(object sender, RoutedEventArgs e)
+        {
+            // open the addBike window, but pass current bike in case of editing an existing bike instead of adding a new one
+            var editWindow = new AddBike(currentBike);
+            editWindow.ShowDialog();
+
+            // refresh the bike page after editing details to display edited information
+            var refreshedWindow = new BikeDetails(currentBike);
+            refreshedWindow.Show();
             this.Close();
         }
 
