@@ -135,7 +135,16 @@ namespace FindlayBikeShop
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value?.ToString() == "Rented" ? "Return" : "Rent";
+            string? status = value?.ToString();
+
+            // button text
+            if (status == "Rented")
+                return "Return";
+
+            if (status == "Retired")
+                return "Retired";
+
+            return "Rent";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -148,7 +157,9 @@ namespace FindlayBikeShop
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value?.ToString() != "Maintenance";
+            // disable rent button for bikes that need maintenance or are retired
+            string? status = value?.ToString();
+            return status != "Maintenance" && status != "Retired";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

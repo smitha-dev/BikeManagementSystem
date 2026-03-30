@@ -140,8 +140,9 @@ Future Work:
 			<ComboBoxItem Content="Available"/>
 			<ComboBoxItem Content="Rented"/>
 			<ComboBoxItem Content="Maintenance"/>
+            <ComboBoxItem Content="Retired"/>
 
-		</ComboBox>
+        </ComboBox>
 
 		<Button
 			Content="Add Bike"
