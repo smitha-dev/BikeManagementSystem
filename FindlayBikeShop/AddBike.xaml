@@ -9,6 +9,7 @@
 
     <Grid Margin="15">
 
+        <!-- Grid layout -->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -26,9 +27,11 @@
         <!-- FORM -->
         <StackPanel Grid.Row="1" Margin="0,10,0,10">
 
+            <!-- Brand -->
             <TextBlock Text="Brand"/>
             <TextBox x:Name="BrandBox" Margin="0,0,0,10"/>
 
+            <!-- Size -->
             <TextBlock Text="Size"/>
             <ComboBox x:Name="SizeBox" Margin="0,0,0,10">
                 <ComboBoxItem Content="S"/>
@@ -36,17 +39,21 @@
                 <ComboBoxItem Content="L"/>
             </ComboBox>
 
+            <!-- Seat height -->
             <TextBlock Text="Seat height in inches"/>
             <TextBox x:Name="SeatBox" Margin="0,0,0,10"/>
 
+            <!-- Color -->
             <TextBlock Text="Color"/>
             <TextBox x:Name="ColorBox" Margin="0,0,0,10"/>
 
+            <!-- Status -->
             <TextBlock Text="Status"/>
             <ComboBox x:Name="StatusBox" Margin="0,0,0,10">
                 <ComboBoxItem Content="Available"/>
                 <ComboBoxItem Content="Rented"/>
                 <ComboBoxItem Content="Maintenance"/>
+                <ComboBoxItem Content="Retired"/>
             </ComboBox>
 
         </StackPanel>

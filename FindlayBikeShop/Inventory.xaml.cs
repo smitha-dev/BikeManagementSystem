@@ -1,18 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using Microsoft.Data.Sqlite;
 using System.Windows;
-using System.Windows.Media;
-using System;
-using System.Collections.Generic;
-using Microsoft.Data.Sqlite;
-using System.Collections.Generic;
-using System;
-using System.Collections.Generic;
 
 namespace FindlayBikeShop
 {
-    /// <summary>
-    /// Interaction logic for Inventory.xaml
-    /// </summary>
     public partial class Inventory : Window
     {
         private string connectionString = "Data Source=BikeDatabase.db";
@@ -50,9 +40,7 @@ namespace FindlayBikeShop
                             Size = reader.IsDBNull(2) ? null : reader.GetString(2),
                             Color = reader.IsDBNull(3) ? null : reader.GetString(3),
                             Status = reader.IsDBNull(4) ? null : reader.GetString(4),
-                            LastUpdated = reader.IsDBNull(5)
-                                ? null
-                                : reader.GetDateTime(5).ToString("yyyy-MM-dd"),
+                            LastUpdated = reader.IsDBNull(5) ? null : reader.GetDateTime(5).ToString("yyyy-MM-dd"),
                             Photo = reader.IsDBNull(6) ? null : reader.GetString(6)
                         });
                     }
@@ -78,9 +66,7 @@ namespace FindlayBikeShop
         {
             var addBikeWindow = new AddBike();
             addBikeWindow.ShowDialog();
-
-            // Refresh list after adding a bike
-            LoadAllBikes();
+            LoadAllBikes();             // Refresh list after adding a bike
         }
     }
 

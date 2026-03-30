@@ -52,7 +52,6 @@
         <!-- ========================= -->
         <!-- BIKES NEEDING REPAIR      -->
         <!-- ========================= -->
-
         <Label
             Content="Bikes that need repair"
             Grid.Row="1"
@@ -60,6 +59,7 @@
             VerticalAlignment="Top"
             Margin="0,5,0,0"/>
 
+        <!-- ListBox to display -->
         <ListBox x:Name="BikeNeedToRepair"
                  Grid.Row="1"
                  Grid.ColumnSpan="2"
@@ -83,7 +83,6 @@
         <!-- ========================= -->
         <!-- AVAILABLE BIKES           -->
         <!-- ========================= -->
-
         <Label
             Content="Available bikes"
             Grid.Row="2"
@@ -92,6 +91,7 @@
             VerticalAlignment="Top"
             Margin="0,5,0,0"/>
 
+        <!-- ListBox to display -->
         <ListBox x:Name="AvailableBikeList"
                  Grid.Row="2"
                  Grid.Column="0"
@@ -126,6 +126,7 @@
             VerticalAlignment="Top"
             Margin="15,5,0,0"/>
 
+        <!-- ListBox to display -->
         <ListBox x:Name="RentedBikeList"
                  Grid.Row="2"
                  Grid.Column="1"
@@ -146,6 +147,5 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-
     </Grid>
 </Window>

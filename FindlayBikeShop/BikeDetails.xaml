@@ -76,11 +76,12 @@ Purpose: Displays detailed information about a specific bike.
             Margin="10">
 
             <TextBlock
-    Text="Bike Details"
-    FontWeight="Bold"
-    FontSize="14"
-    Margin="0,0,0,10"/>
+                Text="Bike Details"
+                FontWeight="Bold"
+                FontSize="14"
+                Margin="0,0,0,10"/>
 
+            <!-- Bike details queried from the db -->
             <TextBlock Text="{Binding BikeID, StringFormat=Bike ID: {0}}"/>
             <TextBlock Text="{Binding Brand, StringFormat=Brand: {0}}"/>
             <TextBlock Text="{Binding Size, StringFormat=Size: {0}}"/>
@@ -90,18 +91,17 @@ Purpose: Displays detailed information about a specific bike.
             <TextBlock Text="{Binding LastUpdated, StringFormat=Last Updated: {0}}"/>
 
             <Button
-    Content="Upload Photo"
-    Width="120"
-    Margin="0,10,250,0"/>
+                Content="Upload Photo"
+                Width="120"
+                Margin="0,10,250,0"/>
 
             <Button
-    Content="Edit Details"
-    Width="120"
-    Margin="0,-20,0,0"
-    Click="EditDetails_Click"/>
+                Content="Edit Details"
+                Width="120"
+                Margin="0,-20,0,0"
+                Click="EditDetails_Click"/>
 
         </StackPanel>
-
 
         <!-- MAINTENANCE HISTORY -->
         <GroupBox
@@ -111,13 +111,7 @@ Purpose: Displays detailed information about a specific bike.
             Margin="0,0,10,5">
 
             <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" SelectionChanged="ListBox_SelectionChanged"/>
-
-            <!--
-            TODO: Display maintenance records for this bike
-            -->
-
         </GroupBox>
-
 
         <!-- RENTAL HISTORY -->
         <GroupBox
@@ -126,14 +120,24 @@ Purpose: Displays detailed information about a specific bike.
             Grid.Column="1"
             Margin="0,0,0,5">
 
-            <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" SelectionChanged="ListBox_SelectionChanged_1"/>
+            <!-- DataGrid to display rental info-->
+            <DataGrid x:Name="RentalHistoryGrid"
+          AutoGenerateColumns="False"
+          IsReadOnly="True"
+          Margin="5">
 
-            <!--
-            TODO: Show past rentals for this bike
-            -->
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Rental ID" Binding="{Binding RentalID}" Width="60"/>
+                    <DataGridTextColumn Header="Student" Binding="{Binding StudentID}" Width="80"/>
+                    <DataGridTextColumn Header="Semester" Binding="{Binding SemesterRented}" Width="80"/>
+                    <DataGridTextColumn Header="Year" Binding="{Binding Year}" Width="40"/>
+                    <DataGridTextColumn Header="Checkout" Binding="{Binding CheckoutDate}" Width="120"/>
+                    <DataGridTextColumn Header="Due" Binding="{Binding DueDate}" Width="120"/>
+                    <DataGridTextColumn Header="Returned" Binding="{Binding ReturnDate}" Width="120"/>
+                </DataGrid.Columns>
+            </DataGrid>
 
         </GroupBox>
-
 
         <!-- ACTION BUTTONS -->
         <Button
@@ -144,12 +148,20 @@ Purpose: Displays detailed information about a specific bike.
             HorizontalAlignment="Left" Click="Button_Click"/>
 
         <Button
-            Content="Edit History"
-            Grid.Row="3"
-            Grid.Column="1"
-            Width="120"
-            HorizontalAlignment="Left"/>
+    Content="Edit History"
+    Grid.Row="3"
+    Grid.Column="1"
+    Width="120"
+    HorizontalAlignment="Left"
+    Click="EditHistory_Click"/>
+
+        <Button
+    Content="Rent Bike"
+    Grid.Row="3"
+    Grid.Column="3"
+    Width="120"
+    HorizontalAlignment="Right"
+    Click="EditHistory_Click"/>
 
     </Grid>
-
 </Window>

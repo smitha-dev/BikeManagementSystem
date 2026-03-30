@@ -1,24 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Data.Sqlite;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Microsoft.Data.Sqlite;
 
 
 namespace FindlayBikeShop
 {
-    /// <summary>
-    /// Interaction logic for BikeDetails.xaml
-    /// </summary>
     public partial class BikeDetails : Window
     {
 
@@ -32,10 +18,10 @@ namespace FindlayBikeShop
             InitializeComponent();
 
             currentBike = bike;
-
             this.DataContext = bike;
-        }
 
+            LoadRentalHistory();
+        }
 
         private void Home_Click(object sender, RoutedEventArgs e)
         {
@@ -53,8 +39,6 @@ namespace FindlayBikeShop
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
-
             var maintenanceWindow = new MaintenanceHistory();
             maintenanceWindow.Show();
         }
@@ -71,14 +55,78 @@ namespace FindlayBikeShop
             this.Close();
         }
 
+        private void EditHistory_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedRental = GetSelectedRental();
+
+            if (selectedRental == null)
+            {
+                MessageBox.Show("Please select a rental record first.");
+                return;
+            }
+
+            var editWindow = new EditRentalHistory(selectedRental);
+            bool? result = editWindow.ShowDialog();
+
+            if (result == true)
+            {
+                LoadRentalHistory();
+            }
+        }
+
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
         }
 
-        private void ListBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        private void LoadRentalHistory()
         {
+            var rentals = new List<RentalRecord>();
 
+            using (var conn = new SqliteConnection(connectionString))
+            {
+                conn.Open();
+
+                string sql = @"
+            SELECT RentalID, BikeID, StudentID, SemesterRented, Year,
+                   CheckoutDate, DueDate, ReturnDate,
+                   CheckinDate1, CheckinDate2, CheckinDate3
+            FROM Rentals
+            WHERE BikeID = @bikeId
+            ORDER BY CheckoutDate DESC;";
+
+                using (var cmd = new SqliteCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@bikeId", currentBike.BikeID);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            rentals.Add(new RentalRecord
+                            {
+                                RentalID = reader.GetInt32(0),
+                                BikeID = reader.GetInt32(1),
+                                StudentID = reader.IsDBNull(2) ? null : reader.GetString(2),
+                                SemesterRented = reader.IsDBNull(3) ? null : reader.GetString(3),
+                                Year = reader.IsDBNull(4) ? 0 : reader.GetInt32(4),
+                                CheckoutDate = reader.IsDBNull(5) ? null : reader.GetString(5),
+                                DueDate = reader.IsDBNull(6) ? null : reader.GetString(6),
+                                ReturnDate = reader.IsDBNull(7) ? null : reader.GetString(7),
+                                CheckinDate1 = reader.IsDBNull(8) ? null : reader.GetString(8),
+                                CheckinDate2 = reader.IsDBNull(9) ? null : reader.GetString(9),
+                                CheckinDate3 = reader.IsDBNull(10) ? null : reader.GetString(10)
+                            });
+                        }
+                    }
+                }
+            }
+            RentalHistoryGrid.ItemsSource = rentals;
+        }
+
+        private RentalRecord? GetSelectedRental()
+        {
+            return RentalHistoryGrid.SelectedItem as RentalRecord;
         }
     }
 }

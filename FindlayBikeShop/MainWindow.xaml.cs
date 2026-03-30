@@ -1,5 +1,4 @@
 ﻿using Microsoft.Data.Sqlite;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -20,7 +19,7 @@ namespace FindlayBikeShop
         }
 
         // ==============================
-        // Bikes needing repair
+        // Maintenance Bikes
         // ==============================
         private void LoadMaintenanceBikes()
         {
@@ -50,13 +49,11 @@ namespace FindlayBikeShop
                             Color = reader.IsDBNull(4) ? null : reader.GetString(4),
                             Status = reader.IsDBNull(5) ? null : reader.GetString(5),
                             LastUpdated = reader.IsDBNull(6) ? null : reader.GetDateTime(6).ToString("MM-dd-yyyy"),
-                            Notes = reader.IsDBNull(7) ? null : reader.GetString(7)
-
+                            Notes = reader.IsDBNull(7) ? null : reader.GetString(7) // maintenance notes
                         });
                     }
                 }
             }
-
             BikeNeedToRepair.ItemsSource = bikes;
         }
 
@@ -84,23 +81,21 @@ namespace FindlayBikeShop
                         bikes.Add(new Bike
                         {
                             BikeID = reader.GetInt32(0),
-                            Brand = reader.GetString(1),
-                            Size = reader.GetString(2),
+                            Brand = reader.IsDBNull(1) ? null : reader.GetString(1),
+                            Size = reader.IsDBNull(2) ? null : reader.GetString(2),
                             SeatHeight = reader.IsDBNull(3) ? 0 : reader.GetDouble(3),
-                            Color = reader.GetString(4),
+                            Color = reader.IsDBNull(4) ? null : reader.GetString(4),
                             Status = reader.IsDBNull(5) ? null : reader.GetString(5),
                             LastUpdated = reader.IsDBNull(6) ? null : reader.GetDateTime(6).ToString("MM-dd-yyyy")
-
                         });
                     }
                 }
             }
-
             AvailableBikeList.ItemsSource = bikes;
         }
 
         // ==============================
-        // Rented bikes
+        // Unavailable bikes
         // ==============================
         private void LoadRentedBikes()
         {
@@ -111,8 +106,8 @@ namespace FindlayBikeShop
                 connection.Open();
 
                 string sql = @"SELECT BikeID, Brand, Size, SeatHeight, Color, Status, LastUpdated
-                       FROM Bikes
-                       WHERE Status = 'Rented'
+                       FROM Bikes 
+                       WHERE Status = 'Rented' OR Status = 'Retired'
                        ORDER BY BikeID;";
 
                 using (var cmd = new SqliteCommand(sql, connection))
@@ -133,7 +128,6 @@ namespace FindlayBikeShop
                     }
                 }
             }
-
             RentedBikeList.ItemsSource = bikes;
         }
 
