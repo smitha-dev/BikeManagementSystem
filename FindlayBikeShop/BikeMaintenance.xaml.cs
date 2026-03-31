@@ -1,7 +1,19 @@
-﻿using Microsoft.Data.Sqlite;
-using Microsoft.Win32;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using Microsoft.Data.Sqlite;
+using Microsoft.Win32;
 
 namespace FindlayBikeShop
 {
@@ -63,7 +75,7 @@ namespace FindlayBikeShop
 
                 int rows = command.ExecuteNonQuery();
 
-                MessageBox.Show("Saved! Rows: " + rows);
+                //                MessageBox.Show("Saved! Rows: " + rows);
             }
         }
         private void LoadPhoto(string relativePath)
@@ -104,6 +116,110 @@ namespace FindlayBikeShop
                 {
                     LoadPhoto(photoPath);
                 }
+            }
+        }
+
+
+
+        private void FixedButton_Click(object sender, RoutedEventArgs e)
+        {
+            string connectionString = "Data Source=BikeDatabase.db";
+
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                connection.Open();
+
+                // Step 1: Get BikeID from Maintenance table
+                var getBikeCmd = connection.CreateCommand();
+                getBikeCmd.CommandText = @" SELECT BikeID 
+                                            FROM Maintenance 
+                                            WHERE MaintenanceID = $mid";
+                getBikeCmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
+
+                object result = getBikeCmd.ExecuteScalar();
+
+                if (result != null)
+                {
+                    int bikeID = Convert.ToInt32(result);
+
+                    // Step 2: Update bike status to 'Available'
+                    var updateCmd = connection.CreateCommand();
+                    updateCmd.CommandText = @"
+                                                UPDATE Bikes
+                                                SET Status = 'Available'
+                                                WHERE BikeID = $bid";
+                    updateCmd.Parameters.AddWithValue("$bid", bikeID);
+
+                    updateCmd.ExecuteNonQuery();
+
+                    MessageBox.Show("Bike marked as Available!");
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Bike not found for this maintenance record.");
+                }
+            }
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string connectionString = "Data Source=BikeDatabase.db";
+
+                using (var connection = new SqliteConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string note = NoteTextBox.Text;
+                    double cost = 0;
+                    double.TryParse(CostTextBox.Text, out cost);
+
+                    var updateMaintenanceCmd = connection.CreateCommand();
+                    updateMaintenanceCmd.CommandText = @"
+                UPDATE Maintenance
+                SET Notes = $note,
+                    Cost = $cost
+                WHERE MaintenanceID = $mid
+            ";
+                    updateMaintenanceCmd.Parameters.AddWithValue("$note", note);
+                    updateMaintenanceCmd.Parameters.AddWithValue("$cost", cost);
+                    updateMaintenanceCmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
+
+                    updateMaintenanceCmd.ExecuteNonQuery();
+
+                    var getBikeCmd = connection.CreateCommand();
+                    getBikeCmd.CommandText = @"
+                SELECT BikeID
+                FROM Maintenance
+                WHERE MaintenanceID = $mid
+            ";
+                    getBikeCmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
+
+                    object result = getBikeCmd.ExecuteScalar();
+
+                    if (result != null)
+                    {
+                        int bikeID = Convert.ToInt32(result);
+
+                        var updateBikeCmd = connection.CreateCommand();
+                        updateBikeCmd.CommandText = @"
+                    UPDATE Bikes
+                    SET Status = 'Maintenance'
+                    WHERE BikeID = $bid
+                ";
+                        updateBikeCmd.Parameters.AddWithValue("$bid", bikeID);
+
+                        updateBikeCmd.ExecuteNonQuery();
+                    }
+
+                    MessageBox.Show("Saved!");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("ERROR: " + ex.Message);
             }
         }
     }
