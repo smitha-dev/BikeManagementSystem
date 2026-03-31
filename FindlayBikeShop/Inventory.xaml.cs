@@ -109,27 +109,25 @@ namespace FindlayBikeShop
             }
         }
 
-        private void FilterByStatus(string status)
-        {
-            if (bikesView == null) return;
+         private void FilterByStatus(string status)
+ {
+     if (bikesView == null) return;
 
-            if (status == "All")
-            {
-                bikesView.Filter = null;
-            }
-            else
-            {
-                bikesView.Filter = obj =>
-                {
-                    if (obj is Bike bike)
-                    {
-                        return bike.Status == status;
-                    }
+     bikesView.Filter = obj =>
+     {
+         if (obj is Bike bike)
+         {
+             // Default "All" → hide retired bikes
+             if (status == "All")
+                 return bike.Status != "Retired";
 
-                    return false;
-                };
-            }
-        }
+             // Specific filter → show only that status
+             return bike.Status == status;
+         }
+
+         return false;
+     };
+ }
 
         private void StatusFilterComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
