@@ -88,7 +88,7 @@ namespace FindlayBikeShop
             this.Close();
         }
     }
-}
+
         private void RentReturnButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button btn && btn.Tag is Bike bike)
