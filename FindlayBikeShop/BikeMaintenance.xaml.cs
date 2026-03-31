@@ -1,18 +1,8 @@
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Microsoft.Data.Sqlite;
+using System;
+using System.IO;
+using System.Windows;
+using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 
 namespace FindlayBikeShop
@@ -20,207 +10,155 @@ namespace FindlayBikeShop
     public partial class MaintenanceHistory : Window
     {
         private int currentMaintenanceID;
+        private string connectionString = "Data Source=BikeDatabase.db";
 
         public MaintenanceHistory(int maintenanceID)
         {
             InitializeComponent();
             currentMaintenanceID = maintenanceID;
+            LoadMaintenanceDetails();
         }
+
+        private void LoadMaintenanceDetails()
+        {
+            using var conn = new SqliteConnection(connectionString);
+            conn.Open();
+
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
+                SELECT Notes, Cost
+                FROM Maintenance
+                WHERE MaintenanceID = $mid;
+            ";
+            cmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
+
+            using var reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                NoteTextBox.Text = reader.IsDBNull(0) ? "" : reader.GetString(0);
+                CostTextBox.Text = reader.IsDBNull(1) ? "0" : reader.GetDouble(1).ToString();
+            }
+
+            // Load last photo if exists
+            LoadPhotoFromDatabase();
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            string note = NoteTextBox.Text;
+            double.TryParse(CostTextBox.Text, out double cost);
+
+            using var conn = new SqliteConnection(connectionString);
+            conn.Open();
+
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
+                UPDATE Maintenance
+                SET Notes = $note,
+                    Cost = $cost
+                WHERE MaintenanceID = $mid;
+            ";
+            cmd.Parameters.AddWithValue("$note", note);
+            cmd.Parameters.AddWithValue("$cost", cost);
+            cmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
+
+            cmd.ExecuteNonQuery();
+            MessageBox.Show("Saved!");
+            this.Close();
+        }
+
+        private void FixedButton_Click(object sender, RoutedEventArgs e)
+        {
+            using var conn = new SqliteConnection(connectionString);
+            conn.Open();
+
+            // Get BikeID for this maintenance
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT BikeID FROM Maintenance WHERE MaintenanceID = $mid";
+            cmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
+            var result = cmd.ExecuteScalar();
+
+            if (result != null)
+            {
+                int bikeID = Convert.ToInt32(result);
+
+                // Update bike status to Available
+                var updateCmd = conn.CreateCommand();
+                updateCmd.CommandText = "UPDATE Bikes SET Status='Available' WHERE BikeID=$bid";
+                updateCmd.Parameters.AddWithValue("$bid", bikeID);
+                updateCmd.ExecuteNonQuery();
+
+                var deleteCmd = conn.CreateCommand();
+                deleteCmd.CommandText = @"
+                    DELETE FROM Maintenance
+                    WHERE BikeID = $bikeId ";
+                deleteCmd.Parameters.AddWithValue("$bikeId", bikeID);
+                deleteCmd.ExecuteNonQuery();
+
+                MessageBox.Show("Bike marked as Available!");
+                this.Close();
+            }
+        }
+
         private void UploadPhoto_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
-
             dialog.Filter = "Image Files (*.png;*.jpg;*.jpeg)|*.png;*.jpg;*.jpeg";
 
             if (dialog.ShowDialog() == true)
             {
                 string sourcePath = dialog.FileName;
+                string fileName = "bike_" + DateTime.Now.Ticks + Path.GetExtension(sourcePath);
+                string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "Maintenance");
 
-                string fileName = "bike_" + DateTime.Now.Ticks + System.IO.Path.GetExtension(sourcePath);
+                if (!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
 
-                string destinationFolder = System.IO.Path.Combine(
-                    AppDomain.CurrentDomain.BaseDirectory,
-                    "Images",
-                    "Maintenance"
-                );
-
-                if (!System.IO.Directory.Exists(destinationFolder))
-                {
-                    System.IO.Directory.CreateDirectory(destinationFolder);
-                }
-
-                string destinationPath = System.IO.Path.Combine(destinationFolder, fileName);
-
-                System.IO.File.Copy(sourcePath, destinationPath, true);
+                string destinationPath = Path.Combine(destinationFolder, fileName);
+                File.Copy(sourcePath, destinationPath, true);
 
                 DamagePhoto.Source = new BitmapImage(new Uri(destinationPath));
 
                 SavePhotoPathToDatabase("Images/Maintenance/" + fileName);
             }
         }
+
         private void SavePhotoPathToDatabase(string relativePath)
         {
-            string connectionString = "Data Source=BikeDatabase.db";
+            using var conn = new SqliteConnection(connectionString);
+            conn.Open();
 
-            using (var connection = new SqliteConnection(connectionString))
-            {
-                connection.Open();
-
-                var command = connection.CreateCommand();
-
-                command.CommandText = @"INSERT INTO Photos (MaintenanceID, FilePath, PhotoType)
-                    VALUES ($id, $path, 'Maintenance')
-                ";
-                command.Parameters.AddWithValue("$path", relativePath);
-                command.Parameters.AddWithValue("$id", currentMaintenanceID);
-
-                int rows = command.ExecuteNonQuery();
-
-                //                MessageBox.Show("Saved! Rows: " + rows);
-            }
-        }
-        private void LoadPhoto(string relativePath)
-        {
-            string fullPath = System.IO.Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                relativePath
-            );
-
-            if (System.IO.File.Exists(fullPath))
-            {
-                DamagePhoto.Source = new BitmapImage(new Uri(fullPath));
-            }
-        }
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            string connectionString = "Data Source=BikeDatabase.db";
-
-            using (var connection = new SqliteConnection(connectionString))
-            {
-                connection.Open();
-
-                var command = connection.CreateCommand();
-
-                command.CommandText = @"
-                    SELECT FilePath
-                    FROM Photos
-                    WHERE MaintenanceID = $id
-                    ORDER BY PhotoID DESC
-                    LIMIT 1
-                ";
-
-                command.Parameters.AddWithValue("$id", currentMaintenanceID);
-
-                var result = command.ExecuteScalar();
-
-                if (result is string photoPath && !string.IsNullOrWhiteSpace(photoPath))
-                {
-                    LoadPhoto(photoPath);
-                }
-            }
-        }
-
-
-
-        private void FixedButton_Click(object sender, RoutedEventArgs e)
-        {
-            string connectionString = "Data Source=BikeDatabase.db";
-
-            using (var connection = new SqliteConnection(connectionString))
-            {
-                connection.Open();
-
-                // Step 1: Get BikeID from Maintenance table
-                var getBikeCmd = connection.CreateCommand();
-                getBikeCmd.CommandText = @" SELECT BikeID 
-                                            FROM Maintenance 
-                                            WHERE MaintenanceID = $mid";
-                getBikeCmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
-
-                object result = getBikeCmd.ExecuteScalar();
-
-                if (result != null)
-                {
-                    int bikeID = Convert.ToInt32(result);
-
-                    // Step 2: Update bike status to 'Available'
-                    var updateCmd = connection.CreateCommand();
-                    updateCmd.CommandText = @"
-                                                UPDATE Bikes
-                                                SET Status = 'Available'
-                                                WHERE BikeID = $bid";
-                    updateCmd.Parameters.AddWithValue("$bid", bikeID);
-
-                    updateCmd.ExecuteNonQuery();
-
-                    MessageBox.Show("Bike marked as Available!");
-                    this.Close();
-                }
-                else
-                {
-                    MessageBox.Show("Bike not found for this maintenance record.");
-                }
-            }
-        }
-
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                string connectionString = "Data Source=BikeDatabase.db";
-
-                using (var connection = new SqliteConnection(connectionString))
-                {
-                    connection.Open();
-
-                    string note = NoteTextBox.Text;
-                    double cost = 0;
-                    double.TryParse(CostTextBox.Text, out cost);
-
-                    var updateMaintenanceCmd = connection.CreateCommand();
-                    updateMaintenanceCmd.CommandText = @"
-                UPDATE Maintenance
-                SET Notes = $note,
-                    Cost = $cost
-                WHERE MaintenanceID = $mid
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
+                INSERT INTO Photos (MaintenanceID, FilePath, PhotoType)
+                VALUES ($mid, $path, 'Maintenance');
             ";
-                    updateMaintenanceCmd.Parameters.AddWithValue("$note", note);
-                    updateMaintenanceCmd.Parameters.AddWithValue("$cost", cost);
-                    updateMaintenanceCmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
+            cmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
+            cmd.Parameters.AddWithValue("$path", relativePath);
+            cmd.ExecuteNonQuery();
+        }
 
-                    updateMaintenanceCmd.ExecuteNonQuery();
+        private void LoadPhotoFromDatabase()
+        {
+            using var conn = new SqliteConnection(connectionString);
+            conn.Open();
 
-                    var getBikeCmd = connection.CreateCommand();
-                    getBikeCmd.CommandText = @"
-                SELECT BikeID
-                FROM Maintenance
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
+                SELECT FilePath
+                FROM Photos
                 WHERE MaintenanceID = $mid
+                ORDER BY PhotoID DESC
+                LIMIT 1;
             ";
-                    getBikeCmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
+            cmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
 
-                    object result = getBikeCmd.ExecuteScalar();
-
-                    if (result != null)
-                    {
-                        int bikeID = Convert.ToInt32(result);
-
-                        var updateBikeCmd = connection.CreateCommand();
-                        updateBikeCmd.CommandText = @"
-                    UPDATE Bikes
-                    SET Status = 'Maintenance'
-                    WHERE BikeID = $bid
-                ";
-                        updateBikeCmd.Parameters.AddWithValue("$bid", bikeID);
-
-                        updateBikeCmd.ExecuteNonQuery();
-                    }
-
-                    MessageBox.Show("Saved!");
-                }
-            }
-            catch (Exception ex)
+            var result = cmd.ExecuteScalar();
+            if (result is string path)
             {
-                MessageBox.Show("ERROR: " + ex.Message);
+                string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+                if (File.Exists(fullPath))
+                    DamagePhoto.Source = new BitmapImage(new Uri(fullPath));
             }
         }
     }
