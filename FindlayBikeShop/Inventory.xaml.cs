@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
+using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -79,16 +79,6 @@ namespace FindlayBikeShop
             LoadAllBikes();
         }
 
-            private void BikesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (BikesListView.SelectedItem is Bike selectedBike)
-        {
-            var detailsWindow = new BikeDetails(selectedBike);
-            detailsWindow.Show();
-            this.Close();
-        }
-    }
-
         private void RentReturnButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button btn && btn.Tag is Bike bike)
@@ -109,25 +99,25 @@ namespace FindlayBikeShop
             }
         }
 
-         private void FilterByStatus(string status)
- {
-     if (bikesView == null) return;
+        private void FilterByStatus(string status)
+        {
+            if (bikesView == null) return;
 
-     bikesView.Filter = obj =>
-     {
-         if (obj is Bike bike)
-         {
-             // Default "All" → hide retired bikes
-             if (status == "All")
-                 return bike.Status != "Retired";
+            bikesView.Filter = obj =>
+            {
+                if (obj is Bike bike)
+                {
+                    // Default "All" → hide retired bikes
+                    if (status == "All")
+                        return bike.Status != "Retired";
 
-             // Specific filter → show only that status
-             return bike.Status == status;
-         }
+                    // Specific filter → show only that status
+                    return bike.Status == status;
+                }
 
-         return false;
-     };
- }
+                return false;
+            };
+        }
 
         private void StatusFilterComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -135,6 +125,16 @@ namespace FindlayBikeShop
             {
                 string selectedStatus = item.Content.ToString() ?? "All";
                 FilterByStatus(selectedStatus);
+            }
+        }
+
+        private void BikesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (BikesListView.SelectedItem is Bike selectedBike)
+            {
+                var detailsWindow = new BikeDetails(selectedBike);
+                detailsWindow.Show();
+                this.Close();
             }
         }
     }
