@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
+using Microsoft.Data.Sqlite;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -30,10 +30,15 @@ namespace FindlayBikeShop
                 connection.Open();
 
                 string sql = @"SELECT b.BikeID, b.Brand, b.Size, b.SeatHeight, b.Color, b.Status, b.LastUpdated, m.Notes
-                       FROM Bikes b
-                       LEFT JOIN Maintenance m ON b.BikeID = m.BikeID
-                       WHERE b.Status = 'Maintenance'
-                       ORDER BY b.BikeID;";
+                                FROM Bikes b
+                                LEFT JOIN Maintenance m ON b.BikeID = m.BikeID
+                                WHERE b.Status = 'Maintenance'
+                                  AND m.MaintenanceID = (
+                                      SELECT MAX(MaintenanceID)
+                                      FROM Maintenance
+                                      WHERE BikeID = b.BikeID
+                                  )
+                                ORDER BY b.BikeID;";
 
                 using (var cmd = new SqliteCommand(sql, connection))
                 using (var reader = cmd.ExecuteReader())
@@ -48,7 +53,7 @@ namespace FindlayBikeShop
                             SeatHeight = reader.IsDBNull(3) ? 0 : reader.GetDouble(3),
                             Color = reader.IsDBNull(4) ? null : reader.GetString(4),
                             Status = reader.IsDBNull(5) ? null : reader.GetString(5),
-                            LastUpdated = reader.IsDBNull(6) ? null : reader.GetDateTime(6).ToString("MM-dd-yyyy"),
+                            LastUpdated = reader.IsDBNull(6) ? null : reader.GetDateTime(6).ToString("MM -dd-yyyy"),
                             Notes = reader.IsDBNull(7) ? null : reader.GetString(7) // maintenance notes
                         });
                     }
