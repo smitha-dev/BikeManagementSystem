@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 Window: BikeDetails
 Purpose: Displays detailed information about a specific bike.
 -->
@@ -102,14 +102,13 @@ Purpose: Displays detailed information about a specific bike.
         </StackPanel>
 
         <!-- MAINTENANCE HISTORY -->
-        <GroupBox
-            Header="Maintenance History"
-            Grid.Row="2"
-            Grid.Column="0"
-            Margin="0,0,10,5">
 
-            <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" SelectionChanged="ListBox_SelectionChanged"/>
-        </GroupBox>
+        <DataGrid x:Name="MaintenanceHistoryGrid"
+          AutoGenerateColumns="True"
+          Margin="0,204,5,15" Grid.Row="1" Grid.RowSpan="2"
+          SelectionChanged="MaintenanceHistoryGrid_SelectionChanged"/>
+
+
 
         <!-- RENTAL HISTORY -->
         <GroupBox
@@ -139,19 +138,35 @@ Purpose: Displays detailed information about a specific bike.
 
         <!-- ACTION BUTTONS -->
         <Button
+             x:Name="FlagMaintenanceButton"
             Content="Flag for Maintenance"
             Grid.Row="3"
             Grid.Column="0"
             Width="150"
-            HorizontalAlignment="Left" Click="Button_Click"/>
-
+            HorizontalAlignment="Left" Click="Maintenance_Click"
+            Visibility="Visible"/>
         <Button
-    Content="Edit History"
-    Grid.Row="3"
-    Grid.Column="1"
-    Width="120"
-    HorizontalAlignment="Left"
-    Click="EditHistory_Click"/>
+        x:Name="OpenMaintenanceButton"
+        Content="Open Maintenance"
+         Grid.Row="3"
+        Grid.Column="0"    
+        Width="150"
+        HorizontalAlignment="Left"
+        Click="OpenMaintenance_Click"
+        Visibility="Collapsed"/>
+       
+        
+        
+        
+        
+        <Button
+        Content="Edit History"
+        Grid.Row="3"
+        Grid.Column="1"
+        Width="120"
+        HorizontalAlignment="Left"
+        Click="EditHistory_Click"
+       />
 
         <Button
     Content="Rent Bike"
