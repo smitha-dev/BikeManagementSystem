@@ -37,11 +37,58 @@ namespace FindlayBikeShop
             this.Close();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+            private void Button_Click(object sender, RoutedEventArgs e)
+    {
+        int maintenanceID = GetLatestMaintenanceID(currentBike.BikeID);
+
+        var maintenanceWindow = new MaintenanceHistory(maintenanceID);
+        maintenanceWindow.Show();
+    }
+
+    private int GetLatestMaintenanceID(int bikeID)
+    {
+        using (var connection = new SqliteConnection(connectionString))
         {
-            var maintenanceWindow = new MaintenanceHistory();
-            maintenanceWindow.Show();
+            connection.Open();
+
+            var cmd = connection.CreateCommand();
+            cmd.CommandText = @"
+        SELECT MaintenanceID
+        FROM Maintenance
+        WHERE BikeID = $bikeId
+        ORDER BY MaintenanceID DESC
+        LIMIT 1
+    ";
+            cmd.Parameters.AddWithValue("$bikeId", bikeID);
+
+            object result = cmd.ExecuteScalar();
+
+            if (result != null)
+                return Convert.ToInt32(result);
         }
+
+        // If no maintenance record exists → create one
+        return CreateNewMaintenanceRecord(bikeID);
+    }
+
+    private int CreateNewMaintenanceRecord(int bikeID)
+    {
+        using (var connection = new SqliteConnection(connectionString))
+        {
+            connection.Open();
+
+            var cmd = connection.CreateCommand();
+            cmd.CommandText = @"
+        INSERT INTO Maintenance (BikeID)
+        VALUES ($bikeId);
+        SELECT last_insert_rowid();
+    ";
+            cmd.Parameters.AddWithValue("$bikeId", bikeID);
+
+            return Convert.ToInt32(cmd.ExecuteScalar());
+        }
+    }
+
 
         private void EditDetails_Click(object sender, RoutedEventArgs e)
         {
