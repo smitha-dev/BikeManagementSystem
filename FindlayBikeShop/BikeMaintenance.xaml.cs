@@ -19,11 +19,12 @@ namespace FindlayBikeShop
 {
     public partial class MaintenanceHistory : Window
     {
-        private int currentMaintenanceID = 1;
+        private int currentMaintenanceID;
 
-        public MaintenanceHistory()
+        public MaintenanceHistory(int maintenanceID)
         {
             InitializeComponent();
+            currentMaintenanceID = maintenanceID;
         }
         private void UploadPhoto_Click(object sender, RoutedEventArgs e)
         {
