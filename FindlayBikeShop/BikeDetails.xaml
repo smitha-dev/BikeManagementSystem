@@ -13,7 +13,8 @@ Purpose: Displays detailed information about a specific bike.
     mc:Ignorable="d"
     Title="Bike Details"
     Height="510"
-    Width="800">
+    Width="800"
+    WindowStartupLocation="CenterScreen">
 
     <Grid Margin="10">
 
@@ -33,10 +34,6 @@ Purpose: Displays detailed information about a specific bike.
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- ========================= -->
-        <!-- NAVIGATION BUTTONS        -->
-        <!-- ========================= -->
-
         <Button
             Content="Home"
             Width="100"
@@ -54,21 +51,8 @@ Purpose: Displays detailed information about a specific bike.
             VerticalAlignment="Center"
             Click="Inventory_Click"/>
 
+        <Image x:Name="BikeImage" Margin="0,28,13,6" Grid.Row="1"/>
 
-        <!-- BIKE IMAGE -->
-        <Border
-            Grid.Row="1"
-            Grid.Column="0"
-            BorderBrush="LightGray"
-            BorderThickness="1"
-            Padding="10"
-            Margin="0,10,10,10">
-
-            <Image Stretch="Uniform"/>
-        </Border>
-
-
-        <!-- BIKE DETAILS -->
         <StackPanel
             Grid.Row="1"
             Grid.Column="1"
@@ -80,21 +64,19 @@ Purpose: Displays detailed information about a specific bike.
                 FontSize="14"
                 Margin="0,0,0,10"/>
 
-            <!--
-            TODO: Populate fields from selected Bike object
-            -->
-
-            <TextBlock Text="Bike ID:"/>
-            <TextBlock Text="Brand:"/>
-            <TextBlock Text="Size:"/>
-            <TextBlock Text="Seat Height:"/>
-            <TextBlock Text="Color:"/>
-            <TextBlock Text="Current Status:"/>
+            <TextBlock Text="{Binding BikeID, StringFormat=Bike ID: {0}}"/>
+            <TextBlock Text="{Binding Brand, StringFormat=Brand: {0}}"/>
+            <TextBlock Text="{Binding Size, StringFormat=Size: {0}}"/>
+            <TextBlock Text="{Binding Color, StringFormat=Color: {0}}"/>
+            <TextBlock Text="{Binding Status, StringFormat=Current Status: {0}}"/>
+            <TextBlock Text="{Binding LastUpdated, StringFormat=Last Updated: {0}}"/>
+            <TextBlock Text="{Binding Notes, StringFormat=Notes: {0}}"/>
 
             <Button
                 Content="Upload Photo"
                 Width="120"
-                Margin="0,10,250,0"/>
+                Margin="0,2,250,0" 
+                Click="UploadPhoto_Click"/>
 
         </StackPanel>
 
@@ -130,14 +112,12 @@ Purpose: Displays detailed information about a specific bike.
 
         </GroupBox>
 
-
-        <!-- ACTION BUTTONS -->
         <Button
             Content="Flag for Maintenance"
             Grid.Row="3"
             Grid.Column="0"
             Width="150"
-            HorizontalAlignment="Center"/>
+            HorizontalAlignment="Center" Click="Button_Click"/>
 
         <Button
             Content="Edit History"

@@ -13,7 +13,8 @@ Purpose: Record damage and repair details for a bike.
     mc:Ignorable="d"
     Title="Maintenance Record"
     Height="400"
-    Width="600">
+    Width="600"
+    WindowStartupLocation="CenterScreen">
 
     <Grid Margin="10">
 
@@ -71,6 +72,7 @@ Purpose: Record damage and repair details for a bike.
                 Margin="0,0,0,5"/>
 
             <TextBox
+                x:Name="DescriptionBox"
                 Height="120"
                 TextWrapping="Wrap"
                 AcceptsReturn="True"/>
@@ -80,7 +82,19 @@ Purpose: Record damage and repair details for a bike.
                 FontWeight="Bold"
                 Margin="0,15,0,5"/>
 
-            <TextBox Width="120"/>
+            <TextBox
+                x:Name="CostBox"
+                Width="120"/>
+
+            <TextBlock
+                Text="Part needed:"
+                FontWeight="Bold"
+                Margin="0,15,0,5"/>
+
+            <TextBox
+                x:Name="PartNeededBox"
+                Height="20"
+                Width="200"/>
 
         </StackPanel>
 
@@ -94,6 +108,15 @@ Purpose: Record damage and repair details for a bike.
             Height="30"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"/>
+
+        <Button 
+            Content="Save"
+            Width="100"
+            Height="30"
+            Margin="108,10,172,10"
+            Click="Save_Click"
+            Grid.Column="1"
+            Grid.Row="1"/>
 
         <!--
         TODO: Mark maintenance record as completed

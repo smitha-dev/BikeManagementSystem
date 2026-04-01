@@ -1,18 +1,4 @@
-﻿<!--
-Window: MainWindow
-Purpose: Dashboard for the Findlay Bike Management System
-
-Displays:
-- Bikes needing repair
-- Available bikes
-- Unavailable bikes
-
-Future Work:
-- Bind lists to Bike data model
-- Filter bikes by Status
--->
-
-<Window
+﻿<Window
     x:Class="FindlayBikeShop.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -22,7 +8,8 @@ Future Work:
     mc:Ignorable="d"
     Title="Findlay Bike Management System [Home]"
     Height="510"
-    Width="800">
+    Width="800"
+    WindowStartupLocation="CenterScreen">
 
     <Grid Margin="10">
 
@@ -40,7 +27,6 @@ Future Work:
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
 
         <!-- ========================= -->
         <!-- NAVIGATION BUTTONS        -->
@@ -63,15 +49,10 @@ Future Work:
             VerticalAlignment="Center"
             Click="Inventory_Click"/>
 
-        <Button
-            Content="Open Maintenance"
-            Width="100"
-            Height="30"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Center"
-            Click="OpenMaintenance_Click" Grid.ColumnSpan="2" Margin="275,0,355,0"/>
+        <!-- ========================= -->
+        <!-- BIKES NEEDING REPAIR      -->
+        <!-- ========================= -->
 
-        <!-- BIKES NEEDING REPAIR -->
         <Label
             Content="Bikes that need repair"
             Grid.Row="1"
@@ -79,19 +60,16 @@ Future Work:
             VerticalAlignment="Top"
             Margin="0,5,0,0"/>
 
-        <ListBox
-            Grid.Row="1"
-            Grid.ColumnSpan="2"
-            Margin="0,31,0,0"
-            d:ItemsSource="{d:SampleData ItemCount=5}"/>
+        <ListBox x:Name="BikeNeedToRepair"
+                 Grid.Row="1"
+                 Grid.ColumnSpan="2"
+                 Margin="0,31,0,0"
+                 d:ItemsSource="{d:SampleData ItemCount=5}" SelectionChanged="BikeNeedToRepair_SelectionChanged" />
 
-        <!--
-        TODO: Bind this ListBox to bikes requiring repair
-        Notes: Filter bikes where Status == "Maintenance"
-        -->
+        <!-- ========================= -->
+        <!-- AVAILABLE BIKES           -->
+        <!-- ========================= -->
 
-
-        <!-- AVAILABLE BIKES -->
         <Label
             Content="Available bikes"
             Grid.Row="2"
@@ -100,18 +78,16 @@ Future Work:
             VerticalAlignment="Top"
             Margin="0,5,0,0"/>
 
-        <ListBox
-            Grid.Row="2"
-            Grid.Column="0"
-            Margin="0,30,15,0"
-            d:ItemsSource="{d:SampleData ItemCount=5}"/>
+        <ListBox x:Name="AvailableBikeList"
+                 Grid.Row="2"
+                 Grid.Column="0"
+                 Margin="0,30,15,0"
+                 d:ItemsSource="{d:SampleData ItemCount=5}" SelectionChanged="AvailableBikeList_SelectionChanged" />
 
-        <!--
-        TODO: Bind this list to bikes available for rental
-        Notes: Filter bikes where Status == "Available"
-        -->
+        <!-- ========================= -->
+        <!-- UNAVAILABLE / RENTED BIKES -->
+        <!-- ========================= -->
 
-        <!-- UNAVAILABLE BIKES -->
         <Label
             Content="Unavailable bikes"
             Grid.Row="2"
@@ -120,17 +96,11 @@ Future Work:
             VerticalAlignment="Top"
             Margin="15,5,0,0"/>
 
-        <ListBox
-            Grid.Row="2"
-            Grid.Column="1"
-            Margin="15,30,0,0"
-            d:ItemsSource="{d:SampleData ItemCount=5}"/>
-
-        <!--
-        TODO: Bind to bikes currently not rentable
-        Notes: Status may include "Rented", "Maintenance", or "Lost"
-        -->
+        <ListBox x:Name="RentedBikeList"
+                 Grid.Row="2"
+                 Grid.Column="1"
+                 Margin="15,30,0,0"
+                 d:ItemsSource="{d:SampleData ItemCount=5}" SelectionChanged="RentedBikeList_SelectionChanged" />
 
     </Grid>
-
 </Window>

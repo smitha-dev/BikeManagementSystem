@@ -1,0 +1,199 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|c:\\santiago\\ufindlay\\spring 2025 - 2026\\csci 480\\bikemanagement mar 26\\bikemanagementsystem-main\\findlaybikeshop\\inventory.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|solutionrelative:inventory.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|c:\\santiago\\ufindlay\\spring 2025 - 2026\\csci 480\\bikemanagement mar 26\\bikemanagementsystem-main\\findlaybikeshop\\bike.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|solutionrelative:bike.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|c:\\santiago\\ufindlay\\spring 2025 - 2026\\csci 480\\bikemanagement mar 26\\bikemanagementsystem-main\\findlaybikeshop\\bikemaintenance.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|solutionrelative:bikemaintenance.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|c:\\santiago\\ufindlay\\spring 2025 - 2026\\csci 480\\bikemanagement mar 26\\bikemanagementsystem-main\\findlaybikeshop\\bikedetails.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|solutionrelative:bikedetails.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|c:\\santiago\\ufindlay\\spring 2025 - 2026\\csci 480\\bikemanagement mar 26\\bikemanagementsystem-main\\findlaybikeshop\\bikemaintenance.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|solutionrelative:bikemaintenance.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|c:\\santiago\\ufindlay\\spring 2025 - 2026\\csci 480\\bikemanagement mar 26\\bikemanagementsystem-main\\findlaybikeshop\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|c:\\santiago\\ufindlay\\spring 2025 - 2026\\csci 480\\bikemanagement mar 26\\bikemanagementsystem-main\\findlaybikeshop\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|solutionrelative:mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|c:\\santiago\\ufindlay\\spring 2025 - 2026\\csci 480\\bikemanagement mar 26\\bikemanagementsystem-main\\findlaybikeshop\\inventory.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|solutionrelative:inventory.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|c:\\santiago\\ufindlay\\spring 2025 - 2026\\csci 480\\bikemanagement mar 26\\bikemanagementsystem-main\\findlaybikeshop\\bikedetails.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|solutionrelative:bikedetails.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|c:\\santiago\\ufindlay\\spring 2025 - 2026\\csci 480\\bikemanagement mar 26\\bikemanagementsystem-main\\findlaybikeshop\\addbike.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|solutionrelative:addbike.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|c:\\santiago\\ufindlay\\spring 2025 - 2026\\csci 480\\bikemanagement mar 26\\bikemanagementsystem-main\\findlaybikeshop\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{5D46776B-6124-45C1-BD1B-4AA8215475B9}|FindlayBikeShop.csproj|solutionrelative:app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "BikeMaintenance.xaml.cs",
+              "DocumentMoniker": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\BikeMaintenance.xaml.cs",
+              "RelativeDocumentMoniker": "BikeMaintenance.xaml.cs",
+              "ToolTip": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\BikeMaintenance.xaml.cs",
+              "RelativeToolTip": "BikeMaintenance.xaml.cs",
+              "ViewState": "AgIAAGEAAAAAAAAAAAAuwHYAAABgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-31T00:07:30.295Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Inventory.xaml.cs",
+              "DocumentMoniker": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\Inventory.xaml.cs",
+              "RelativeDocumentMoniker": "Inventory.xaml.cs",
+              "ToolTip": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\Inventory.xaml.cs",
+              "RelativeToolTip": "Inventory.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-31T01:26:18.299Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "MainWindow.xaml.cs",
+              "ToolTip": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\MainWindow.xaml.cs",
+              "RelativeToolTip": "MainWindow.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-31T14:20:50.822Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "BikeMaintenance.xaml",
+              "DocumentMoniker": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\BikeMaintenance.xaml",
+              "RelativeDocumentMoniker": "BikeMaintenance.xaml",
+              "ToolTip": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\BikeMaintenance.xaml",
+              "RelativeToolTip": "BikeMaintenance.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-03-26T14:37:50.215Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "BikeDetails.xaml.cs",
+              "DocumentMoniker": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\BikeDetails.xaml.cs",
+              "RelativeDocumentMoniker": "BikeDetails.xaml.cs",
+              "ToolTip": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\BikeDetails.xaml.cs",
+              "RelativeToolTip": "BikeDetails.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAG4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-30T00:27:37.478Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Inventory.xaml",
+              "DocumentMoniker": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\Inventory.xaml",
+              "RelativeDocumentMoniker": "Inventory.xaml",
+              "ToolTip": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\Inventory.xaml",
+              "RelativeToolTip": "Inventory.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-03-29T23:58:17.865Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Bike.cs",
+              "DocumentMoniker": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\Bike.cs",
+              "RelativeDocumentMoniker": "Bike.cs",
+              "ToolTip": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\Bike.cs",
+              "RelativeToolTip": "Bike.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAAAUwEMAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-31T01:32:48.626Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "BikeDetails.xaml",
+              "DocumentMoniker": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\BikeDetails.xaml",
+              "RelativeDocumentMoniker": "BikeDetails.xaml",
+              "ToolTip": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\BikeDetails.xaml",
+              "RelativeToolTip": "BikeDetails.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-03-29T23:58:23.353Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "AddBike.xaml",
+              "DocumentMoniker": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\AddBike.xaml",
+              "RelativeDocumentMoniker": "AddBike.xaml",
+              "ToolTip": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\AddBike.xaml",
+              "RelativeToolTip": "AddBike.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-03-29T23:58:03.52Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "App.xaml",
+              "DocumentMoniker": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\App.xaml",
+              "RelativeDocumentMoniker": "App.xaml",
+              "ToolTip": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\App.xaml",
+              "RelativeToolTip": "App.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-03-29T23:58:31.221Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "MainWindow.xaml",
+              "ToolTip": "C:\\Santiago\\UFindlay\\Spring 2025 - 2026\\CSCI 480\\BikeManagement Mar 26\\BikeManagementSystem-main\\FindlayBikeShop\\MainWindow.xaml",
+              "RelativeToolTip": "MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-03-26T14:35:00.065Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

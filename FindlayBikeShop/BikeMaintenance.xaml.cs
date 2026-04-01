@@ -18,36 +18,37 @@ namespace FindlayBikeShop
 {
     public partial class MaintenanceHistory : Window
     {
-        private int currentMaintenanceID = 1;
+        private int currentBikeID;
+        private string connectionString = "Data Source=BikeDatabase.db";
 
-        public MaintenanceHistory()
+        public MaintenanceHistory(int bikeID)
         {
             InitializeComponent();
+            currentBikeID = bikeID;
         }
+
         private void UploadPhoto_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
-
             dialog.Filter = "Image Files (*.png;*.jpg;*.jpeg)|*.png;*.jpg;*.jpeg";
 
             if (dialog.ShowDialog() == true)
             {
                 string sourcePath = dialog.FileName;
 
-                string fileName = "bike_" + DateTime.Now.Ticks + System.IO.Path.GetExtension(sourcePath);
+                string fileName = "bike_" + DateTime.Now.Ticks +
+                                  System.IO.Path.GetExtension(sourcePath);
 
-                string destinationFolder = System.IO.Path.Combine(
+                string folder = System.IO.Path.Combine(
                     AppDomain.CurrentDomain.BaseDirectory,
                     "Images",
                     "Maintenance"
                 );
 
-                if (!System.IO.Directory.Exists(destinationFolder))
-                {
-                    System.IO.Directory.CreateDirectory(destinationFolder);
-                }
+                if (!System.IO.Directory.Exists(folder))
+                    System.IO.Directory.CreateDirectory(folder);
 
-                string destinationPath = System.IO.Path.Combine(destinationFolder, fileName);
+                string destinationPath = System.IO.Path.Combine(folder, fileName);
 
                 System.IO.File.Copy(sourcePath, destinationPath, true);
 
@@ -56,10 +57,9 @@ namespace FindlayBikeShop
                 SavePhotoPathToDatabase("Images/Maintenance/" + fileName);
             }
         }
+
         private void SavePhotoPathToDatabase(string relativePath)
         {
-            string connectionString = "Data Source=BikeShop.db";
-
             using (var connection = new SqliteConnection(connectionString))
             {
                 connection.Open();
@@ -67,35 +67,40 @@ namespace FindlayBikeShop
                 var command = connection.CreateCommand();
 
                 command.CommandText = @"
-            UPDATE Maintenance
-            SET PhotoPath = $path
-            WHERE MaintenanceID = $id
-        ";
+                    INSERT INTO Photos (BikeID, FilePath, PhotoType)
+                    VALUES ($bikeID, $path, 'Maintenance')
+                ";
 
+                command.Parameters.AddWithValue("$bikeID", currentBikeID);
                 command.Parameters.AddWithValue("$path", relativePath);
-                command.Parameters.AddWithValue("$id", currentMaintenanceID);
 
-                int rows = command.ExecuteNonQuery();
-
-                MessageBox.Show("Saved! Rows: " + rows);
+                command.ExecuteNonQuery();
             }
         }
-        private void LoadPhoto(string relativePath)
-        {
-            string fullPath = System.IO.Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                relativePath
-            );
 
-            if (System.IO.File.Exists(fullPath))
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            string notes = DescriptionBox.Text;
+            string costText = CostBox.Text;
+            string partNeededText = PartNeededBox.Text;
+
+            if (string.IsNullOrWhiteSpace(notes) || string.IsNullOrWhiteSpace(costText) || string.IsNullOrWhiteSpace(partNeededText))
             {
-                DamagePhoto.Source = new BitmapImage(new Uri(fullPath));
+                MessageBox.Show("Please fill all fields");
+                return;
             }
-        }
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            string connectionString = "Data Source=BikeShop.db";
 
+            if (!double.TryParse(costText, out double cost))
+            {
+                MessageBox.Show("Invalid cost");
+                return;
+            }
+
+            SaveMaintenanceData(notes, cost, partNeededText);
+        }
+
+        private void SaveMaintenanceData(string notes, double cost, string partNeeded)
+        {
             using (var connection = new SqliteConnection(connectionString))
             {
                 connection.Open();
@@ -103,20 +108,22 @@ namespace FindlayBikeShop
                 var command = connection.CreateCommand();
 
                 command.CommandText = @"
-            SELECT PhotoPath
-            FROM Maintenance
-            WHERE MaintenanceID = $id
-        ";
+                    INSERT INTO Maintenance (BikeID, Notes, Cost, PartNeeded, DateFlagged)
+                    VALUES ($bikeID, $notes, $cost, $partNeeded, $date)
+                ";
 
-                command.Parameters.AddWithValue("$id", currentMaintenanceID);
+                command.Parameters.AddWithValue("$bikeID", currentBikeID);
+                command.Parameters.AddWithValue("$notes", notes);
+                command.Parameters.AddWithValue("$cost", cost);
+                command.Parameters.AddWithValue("$partNeeded", partNeeded);
+                command.Parameters.AddWithValue("$date", DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
 
-                var result = command.ExecuteScalar();
+                command.ExecuteNonQuery();
 
-                if (result != null && result.ToString() != "")
-                {
-                    LoadPhoto(result.ToString());
-                }
             }
+
+            MessageBox.Show("Saved successfully!");
         }
+
     }
 }
