@@ -1,4 +1,8 @@
-﻿namespace FindlayBikeShop
+using System;
+using System.Collections.Generic;
+using System.Windows.Media.Imaging;
+
+namespace FindlayBikeShop
 {
     public class Bike
     {
@@ -34,6 +38,40 @@
                     parts.Add($"Color: {Color}");
 
                 return string.Join(" - ", parts);
+            }
+        }
+
+        public BitmapImage PhotoImage
+        {
+            get
+            {
+                try
+                {
+                    string basePath = AppDomain.CurrentDomain.BaseDirectory;
+
+                    if (!string.IsNullOrEmpty(Photo))
+                    {
+                        string fullPath = System.IO.Path.Combine(basePath, Photo);
+
+                        if (System.IO.File.Exists(fullPath))
+                        {
+                            return new BitmapImage(new Uri(fullPath));
+                        }
+                    }
+
+                    string defaultPath = System.IO.Path.Combine(basePath, "Images", "default.png");
+
+                    if (System.IO.File.Exists(defaultPath))
+                    {
+                        return new BitmapImage(new Uri(defaultPath));
+                    }
+
+                    return null;
+                }
+                catch
+                {
+                    return null;
+                }
             }
         }
     }

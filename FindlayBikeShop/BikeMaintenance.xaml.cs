@@ -26,7 +26,7 @@ namespace FindlayBikeShop
 
             var cmd = conn.CreateCommand();
             cmd.CommandText = @"
-                SELECT Notes, Cost
+                SELECT Notes, Cost, PartNeeded
                 FROM Maintenance
                 WHERE MaintenanceID = $mid;
             ";
@@ -37,9 +37,11 @@ namespace FindlayBikeShop
             {
                 NoteTextBox.Text = reader.IsDBNull(0) ? "" : reader.GetString(0);
                 CostTextBox.Text = reader.IsDBNull(1) ? "0" : reader.GetDouble(1).ToString();
+
+                if (!reader.IsDBNull(2))
+                    PartNeededBox.Text = reader.GetString(2);
             }
 
-            // Load last photo if exists
             LoadPhotoFromDatabase();
         }
 
@@ -47,6 +49,7 @@ namespace FindlayBikeShop
         {
             string note = NoteTextBox.Text;
             double.TryParse(CostTextBox.Text, out double cost);
+            string partNeeded = PartNeededBox.Text;
 
             using var conn = new SqliteConnection(connectionString);
             conn.Open();
@@ -55,14 +58,17 @@ namespace FindlayBikeShop
             cmd.CommandText = @"
                 UPDATE Maintenance
                 SET Notes = $note,
-                    Cost = $cost
+                    Cost = $cost,
+                    PartNeeded = $part
                 WHERE MaintenanceID = $mid;
             ";
             cmd.Parameters.AddWithValue("$note", note);
             cmd.Parameters.AddWithValue("$cost", cost);
+            cmd.Parameters.AddWithValue("$part", partNeeded);
             cmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
 
             cmd.ExecuteNonQuery();
+
             MessageBox.Show("Saved!");
             this.Close();
         }
@@ -72,17 +78,16 @@ namespace FindlayBikeShop
             using var conn = new SqliteConnection(connectionString);
             conn.Open();
 
-            // Get BikeID for this maintenance
             var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT BikeID FROM Maintenance WHERE MaintenanceID = $mid";
             cmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
+
             var result = cmd.ExecuteScalar();
 
             if (result != null)
             {
                 int bikeID = Convert.ToInt32(result);
 
-                // Update bike status to Available
                 var updateCmd = conn.CreateCommand();
                 updateCmd.CommandText = "UPDATE Bikes SET Status='Available' WHERE BikeID=$bid";
                 updateCmd.Parameters.AddWithValue("$bid", bikeID);
@@ -109,7 +114,12 @@ namespace FindlayBikeShop
             {
                 string sourcePath = dialog.FileName;
                 string fileName = "bike_" + DateTime.Now.Ticks + Path.GetExtension(sourcePath);
-                string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "Maintenance");
+
+                string destinationFolder = Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "Images",
+                    "Maintenance"
+                );
 
                 if (!Directory.Exists(destinationFolder))
                     Directory.CreateDirectory(destinationFolder);
@@ -135,6 +145,7 @@ namespace FindlayBikeShop
             ";
             cmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
             cmd.Parameters.AddWithValue("$path", relativePath);
+
             cmd.ExecuteNonQuery();
         }
 
@@ -154,9 +165,11 @@ namespace FindlayBikeShop
             cmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
 
             var result = cmd.ExecuteScalar();
+
             if (result is string path)
             {
                 string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+
                 if (File.Exists(fullPath))
                     DamagePhoto.Source = new BitmapImage(new Uri(fullPath));
             }
