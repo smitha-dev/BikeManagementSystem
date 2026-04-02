@@ -33,22 +33,22 @@
                 <TextBlock Text="Year"/>
                 <TextBox x:Name="YearBox" Margin="0,0,0,10"/>
 
-                <TextBlock Text="Checkout Date (yyyy-MM-dd)"/>
+                <TextBlock Text="Checkout Date (mm-dd-yyyy)"/>
                 <TextBox x:Name="CheckoutDateBox" Margin="0,0,0,10"/>
 
-                <TextBlock Text="Due Date (yyyy-MM-dd)"/>
+                <TextBlock Text="Due Date (mm-dd-yyyy)"/>
                 <TextBox x:Name="DueDateBox" Margin="0,0,0,10"/>
 
-                <TextBlock Text="Return Date (yyyy-MM-dd)"/>
+                <TextBlock Text="Return Date (mm-dd-yyyy)"/>
                 <TextBox x:Name="ReturnDateBox" Margin="0,0,0,10"/>
 
-                <TextBlock Text="Check-in Date 1 (yyyy-MM-dd)"/>
+                <TextBlock Text="Check-in Date 1 (mm-dd-yyyy)"/>
                 <TextBox x:Name="CheckinDate1Box" Margin="0,0,0,10"/>
 
-                <TextBlock Text="Check-in Date 2 (yyyy-MM-dd)"/>
+                <TextBlock Text="Check-in Date 2 (mm-dd-yyyy)"/>
                 <TextBox x:Name="CheckinDate2Box" Margin="0,0,0,10"/>
 
-                <TextBlock Text="Check-in Date 3 (yyyy-MM-dd)"/>
+                <TextBlock Text="Check-in Date 3 (mm-dd-yyyy)"/>
                 <TextBox x:Name="CheckinDate3Box" Margin="0,0,0,10"/>
 
             </StackPanel>
