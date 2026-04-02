@@ -1,17 +1,15 @@
 using Microsoft.Data.Sqlite;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 
 namespace FindlayBikeShop
 {
     public partial class BikeDetails : Window
     {
-        private Bike currentBike;
         private string connectionString = "Data Source=BikeDatabase.db";
+        private Bike currentBike;
 
         public BikeDetails(Bike bike)
         {
@@ -22,11 +20,10 @@ namespace FindlayBikeShop
 
             LoadRentalHistory();
             LoadMaintenanceHistory();
-            LoadBikePhoto();
         }
 
         // ===========================
-        // Navigation
+        // Navigation buttons
         // ===========================
         private void Home_Click(object sender, RoutedEventArgs e)
         {
@@ -99,7 +96,8 @@ namespace FindlayBikeShop
             }
 
             var editWindow = new EditRentalHistory(selectedRental);
-            if (editWindow.ShowDialog() == true)
+            bool? result = editWindow.ShowDialog();
+            if (result == true)
                 LoadRentalHistory();
         }
 
@@ -114,7 +112,7 @@ namespace FindlayBikeShop
             conn.Open();
 
             string sql = @"
-                SELECT MaintenanceID, BikeID, Notes, Cost, DateFlagged
+                SELECT MaintenanceID, BikeID, DateFlagged, DateFixed, Notes, Cost
                 FROM Maintenance
                 WHERE BikeID = @bikeId
                 ORDER BY DateFlagged DESC;
@@ -130,9 +128,10 @@ namespace FindlayBikeShop
                 {
                     MaintenanceID = reader.GetInt32(0),
                     BikeID = reader.GetInt32(1),
-                    Notes = reader.IsDBNull(2) ? null : reader.GetString(2),
-                    Cost = reader.IsDBNull(3) ? 0 : reader.GetDouble(3),
-                    DateFlagged = reader.IsDBNull(4) ? null : reader.GetString(4)
+                    DateFlagged = reader.IsDBNull(2) ? null : reader.GetString(2),
+                    DateFixed = reader.IsDBNull(3) ? null : reader.GetString(3),
+                    Notes = reader.IsDBNull(4) ? null : reader.GetString(4),
+                    Cost = reader.IsDBNull(5) ? 0 : reader.GetDouble(5)
                 });
             }
 
@@ -155,27 +154,36 @@ namespace FindlayBikeShop
 
         private void Maintenance_Click(object sender, RoutedEventArgs e)
         {
+            // Create a new maintenance record
             int newID = CreateNewMaintenanceRecord(currentBike.BikeID);
 
+            // Open the maintenance window
             var window = new MaintenanceHistory(newID);
             window.Show();
+
+            // Refresh the grid after closing
             window.Closed += (s, args) => LoadMaintenanceHistory();
 
+            // Clear selection so no record is highlighted
             MaintenanceHistoryGrid.SelectedItem = null;
 
+            // Update button visibility
             FlagMaintenanceButton.Visibility = Visibility.Visible;
             OpenMaintenanceButton.Visibility = Visibility.Collapsed;
+
         }
 
         private void MaintenanceHistoryGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (MaintenanceHistoryGrid.SelectedItem != null)
             {
+                // If a record is selected, hide "Flag for Maintenance" and show "Open Maintenance"
                 FlagMaintenanceButton.Visibility = Visibility.Collapsed;
                 OpenMaintenanceButton.Visibility = Visibility.Visible;
             }
             else
             {
+                // No record selected, show "Flag for Maintenance" and hide "Open Maintenance"
                 FlagMaintenanceButton.Visibility = Visibility.Visible;
                 OpenMaintenanceButton.Visibility = Visibility.Collapsed;
             }
@@ -197,122 +205,35 @@ namespace FindlayBikeShop
             return Convert.ToInt32(cmd.ExecuteScalar());
         }
 
+        private void RentBike_Click(object sender, RoutedEventArgs e)
+        {
+            var rentWindow = new EditRentalHistory(currentBike);
+            bool? result = rentWindow.ShowDialog();
+
+            if (result == true)
+            {
+                currentBike.Status = "Rented";
+                currentBike.LastUpdated = DateTime.Now.ToString("yyyy-MM-dd");
+
+                LoadRentalHistory();
+
+                DataContext = null;
+                DataContext = currentBike;
+            }
+        }
+
         // ===========================
-        // Edit bike
+        // Edit bike details
         // ===========================
         private void EditDetails_Click(object sender, RoutedEventArgs e)
         {
             var editWindow = new AddBike(currentBike);
             editWindow.ShowDialog();
 
+            // Refresh page after editing
             var refreshedWindow = new BikeDetails(currentBike);
             refreshedWindow.Show();
             this.Close();
         }
-
-        // ===========================
-        // PHOTO FEATURE
-        // ===========================
-        private void UploadPhoto_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                OpenFileDialog dialog = new OpenFileDialog();
-                dialog.Filter = "Image Files (*.png;*.jpg;*.jpeg)|*.png;*.jpg;*.jpeg";
-
-                if (dialog.ShowDialog() == true)
-                {
-                    string sourcePath = dialog.FileName;
-
-                    string fileName = "bike_" + DateTime.Now.Ticks +
-                                      System.IO.Path.GetExtension(sourcePath);
-
-                    string folder = System.IO.Path.Combine(
-                        AppDomain.CurrentDomain.BaseDirectory,
-                        "Images",
-                        "BikeDetails"
-                    );
-
-                    if (!System.IO.Directory.Exists(folder))
-                        System.IO.Directory.CreateDirectory(folder);
-
-                    string destinationPath = System.IO.Path.Combine(folder, fileName);
-
-                    System.IO.File.Copy(sourcePath, destinationPath, true);
-
-                    BikeImage.Source = new BitmapImage(new Uri(destinationPath));
-
-                    SaveBikePhoto("Images/BikeDetails/" + fileName);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error uploading image:\n" + ex.Message);
-            }
-        }
-
-        private void SaveBikePhoto(string relativePath)
-        {
-            using (var connection = new SqliteConnection(connectionString))
-            {
-                connection.Open();
-
-                var command = connection.CreateCommand();
-
-                command.CommandText = @"
-                    INSERT INTO Photos (BikeID, FilePath, PhotoType)
-                    VALUES ($bikeID, $path, 'BikeDetails')
-                ";
-
-                command.Parameters.AddWithValue("$bikeID", currentBike.BikeID);
-                command.Parameters.AddWithValue("$path", relativePath);
-
-                command.ExecuteNonQuery();
-            }
-        }
-
-        private void LoadBikePhoto()
-        {
-            using (var connection = new SqliteConnection(connectionString))
-            {
-                connection.Open();
-
-                var command = connection.CreateCommand();
-
-                command.CommandText = @"
-                    SELECT FilePath
-                    FROM Photos
-                    WHERE BikeID = $id AND PhotoType = 'BikeDetails'
-                    ORDER BY PhotoID DESC
-                    LIMIT 1
-                ";
-
-                command.Parameters.AddWithValue("$id", currentBike.BikeID);
-
-                var result = command.ExecuteScalar();
-
-                if (result is string path && !string.IsNullOrWhiteSpace(path))
-                {
-                    string fullPath = System.IO.Path.Combine(
-                        AppDomain.CurrentDomain.BaseDirectory,
-                        path
-                    );
-
-                    if (System.IO.File.Exists(fullPath))
-                    {
-                        BikeImage.Source = new BitmapImage(new Uri(fullPath));
-                    }
-                }
-            }
-        }
-    }
-
-    public class MaintenanceRecord
-    {
-        public int MaintenanceID { get; set; }
-        public int BikeID { get; set; }
-        public string? Notes { get; set; }
-        public double Cost { get; set; }
-        public string? DateFlagged { get; set; }
     }
 }

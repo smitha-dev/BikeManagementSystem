@@ -1,11 +1,11 @@
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.ComponentModel;
 
 namespace FindlayBikeShop
 {
@@ -28,18 +28,12 @@ namespace FindlayBikeShop
             {
                 connection.Open();
 
-                string sql = @"
-                    SELECT b.BikeID, b.Brand, b.Size, b.Color, b.Status, b.LastUpdated,
-                           (
-                               SELECT FilePath
-                               FROM Photos
-                               WHERE BikeID = b.BikeID AND PhotoType = 'BikeDetails'
-                               ORDER BY PhotoID DESC
-                               LIMIT 1
-                           ) AS FilePath
-                    FROM Bikes b
-                    ORDER BY b.BikeID;
-                ";
+                string sql = @"SELECT b.BikeID, b.Brand, b.Size, b.Color, b.Status, b.LastUpdated,
+                                      p.FilePath
+                               FROM Bikes b
+                               LEFT JOIN Photos p ON b.BikeID = p.BikeID
+                               GROUP BY b.BikeID
+                               ORDER BY b.BikeID;";
 
                 using (var cmd = new SqliteCommand(sql, connection))
                 using (var reader = cmd.ExecuteReader())
@@ -87,22 +81,74 @@ namespace FindlayBikeShop
 
         private void RentReturnButton_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button btn && btn.Tag is Bike bike)
+            if (sender is not Button btn || btn.Tag is not Bike bike)
+                return;
+
+            if (bike.Status == "Available")
             {
-                string newStatus = bike.Status == "Rented" ? "Available" : "Rented";
+                var rentWindow = new EditRentalHistory(bike);
+                bool? result = rentWindow.ShowDialog();
 
-                using var connection = new SqliteConnection(connectionString);
-                connection.Open();
-
-                string sql = "UPDATE Bikes SET Status = @status WHERE BikeID = @id";
-                using var cmd = new SqliteCommand(sql, connection);
-                cmd.Parameters.AddWithValue("@status", newStatus);
-                cmd.Parameters.AddWithValue("@id", bike.BikeID);
-                cmd.ExecuteNonQuery();
-
-                bike.Status = newStatus;
-                BikesListView.Items.Refresh();
+                if (result == true)
+                    LoadAllBikes();
             }
+            else if (bike.Status == "Rented")
+            {
+                RentalRecord? activeRental = GetActiveRentalForBike(bike.BikeID);
+
+                if (activeRental == null)
+                {
+                    MessageBox.Show("No active rental record was found for this bike.");
+                    return;
+                }
+
+                var returnWindow = new EditRentalHistory(activeRental);
+                bool? result = returnWindow.ShowDialog();
+
+                if (result == true)
+                    LoadAllBikes();
+            }
+        }
+
+        private RentalRecord? GetActiveRentalForBike(int bikeId)
+        {
+            using var connection = new SqliteConnection(connectionString);
+            connection.Open();
+
+            string sql = @"
+                SELECT RentalID, BikeID, StudentID, SemesterRented, Year,
+                       CheckoutDate, DueDate, ReturnDate,
+                       CheckinDate1, CheckinDate2, CheckinDate3
+                FROM Rentals
+                WHERE BikeID = @bikeId
+                  AND (ReturnDate IS NULL OR ReturnDate = '')
+                ORDER BY CheckoutDate DESC
+                LIMIT 1;";
+
+            using var cmd = new SqliteCommand(sql, connection);
+            cmd.Parameters.AddWithValue("@bikeId", bikeId);
+
+            using var reader = cmd.ExecuteReader();
+
+            if (reader.Read())
+            {
+                return new RentalRecord
+                {
+                    RentalID = reader.GetInt32(0),
+                    BikeID = reader.GetInt32(1),
+                    StudentID = reader.IsDBNull(2) ? null : reader.GetString(2),
+                    SemesterRented = reader.IsDBNull(3) ? null : reader.GetString(3),
+                    Year = reader.IsDBNull(4) ? 0 : reader.GetInt32(4),
+                    CheckoutDate = reader.IsDBNull(5) ? null : reader.GetString(5),
+                    DueDate = reader.IsDBNull(6) ? null : reader.GetString(6),
+                    ReturnDate = reader.IsDBNull(7) ? null : reader.GetString(7),
+                    CheckinDate1 = reader.IsDBNull(8) ? null : reader.GetString(8),
+                    CheckinDate2 = reader.IsDBNull(9) ? null : reader.GetString(9),
+                    CheckinDate3 = reader.IsDBNull(10) ? null : reader.GetString(10)
+                };
+            }
+
+            return null;
         }
 
         private void FilterByStatus(string status)
