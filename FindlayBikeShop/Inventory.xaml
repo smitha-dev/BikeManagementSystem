@@ -66,6 +66,7 @@ Future Work:
             x:Name="BikesListView"
             Grid.Row="1"
             Margin="0,8,0,0"
+            SelectionChanged="BikesListView_SelectionChanged"
             d:ItemsSource="{d:SampleData ItemCount=3}">
 
             <ListView.ItemTemplate>
@@ -128,7 +129,7 @@ Future Work:
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-		<ComboBox Name="StatusFilterComboBox"
+        <ComboBox Name="StatusFilterComboBox"
 				  HorizontalAlignment="Left"
 				  Margin="640,0,0,0"
 				  VerticalAlignment="Center"
@@ -136,15 +137,15 @@ Future Work:
 				  SelectedIndex="0"
 				  SelectionChanged="StatusFilterComboBox_SelectionChanged">
 
-			<ComboBoxItem Content="All"/>
-			<ComboBoxItem Content="Available"/>
-			<ComboBoxItem Content="Rented"/>
-			<ComboBoxItem Content="Maintenance"/>
-			<ComboBoxItem Content="Retired"/>
+            <ComboBoxItem Content="All"/>
+            <ComboBoxItem Content="Available"/>
+            <ComboBoxItem Content="Rented"/>
+            <ComboBoxItem Content="Maintenance"/>
+            <ComboBoxItem Content="Retired"/>
 
-		</ComboBox>
+        </ComboBox>
 
-		<Button
+        <Button
 			Content="Add Bike"
 			Width="100"
 			Height="30"

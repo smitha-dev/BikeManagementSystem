@@ -22,7 +22,7 @@ namespace FindlayBikeShop
 
             LoadRentalHistory();
             LoadMaintenanceHistory();
-            LoadBikePhoto(); // 👈 added from photo branch
+            LoadBikePhoto();
         }
 
         // ===========================
@@ -211,7 +211,7 @@ namespace FindlayBikeShop
         }
 
         // ===========================
-        // PHOTO FEATURE (merged in)
+        // PHOTO FEATURE
         // ===========================
         private void UploadPhoto_Click(object sender, RoutedEventArgs e)
         {
