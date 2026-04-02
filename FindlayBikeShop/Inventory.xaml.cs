@@ -1,11 +1,11 @@
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.ComponentModel;
 
 namespace FindlayBikeShop
 {
@@ -28,12 +28,18 @@ namespace FindlayBikeShop
             {
                 connection.Open();
 
-                string sql = @"SELECT b.BikeID, b.Brand, b.Size, b.Color, b.Status, b.LastUpdated,
-                                      p.FilePath
-                               FROM Bikes b
-                               LEFT JOIN Photos p ON b.BikeID = p.BikeID
-                               GROUP BY b.BikeID
-                               ORDER BY b.BikeID;";
+                string sql = @"
+                    SELECT b.BikeID, b.Brand, b.Size, b.Color, b.Status, b.LastUpdated,
+                           (
+                               SELECT FilePath
+                               FROM Photos
+                               WHERE BikeID = b.BikeID AND PhotoType = 'BikeDetails'
+                               ORDER BY PhotoID DESC
+                               LIMIT 1
+                           ) AS FilePath
+                    FROM Bikes b
+                    ORDER BY b.BikeID;
+                ";
 
                 using (var cmd = new SqliteCommand(sql, connection))
                 using (var reader = cmd.ExecuteReader())
@@ -107,11 +113,9 @@ namespace FindlayBikeShop
             {
                 if (obj is Bike bike)
                 {
-                    // Default "All" → hide retired bikes
                     if (status == "All")
                         return bike.Status != "Retired";
 
-                    // Specific filter → show only that status
                     return bike.Status == status;
                 }
 
@@ -145,7 +149,6 @@ namespace FindlayBikeShop
         {
             string? status = value?.ToString();
 
-            // button text
             if (status == "Rented")
                 return "Return";
 
@@ -165,7 +168,6 @@ namespace FindlayBikeShop
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            // disable rent button for bikes that need maintenance or are retired
             string? status = value?.ToString();
             return status != "Maintenance" && status != "Retired";
         }

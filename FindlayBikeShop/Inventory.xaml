@@ -82,14 +82,14 @@ Future Work:
 
                             <!-- BIKE PHOTO -->
                             <Image
+                                x:Name="BikeImage"
+                                Source="{Binding PhotoImage}"
                                 Width="140"
                                 Height="100"
                                 Margin="0,0,12,0"
                                 Stretch="UniformToFill"
-                                Source="{Binding Photo}"
                                 d:Source="https://www.prioritybicycles.com/cdn/shop/files/600_hero_May2024_1of1.jpg"/>
                             <!-- placeholder image -->
-
 
                             <!-- BIKE DETAILS -->
                             <StackPanel VerticalAlignment="Center">
@@ -140,9 +140,9 @@ Future Work:
 			<ComboBoxItem Content="Available"/>
 			<ComboBoxItem Content="Rented"/>
 			<ComboBoxItem Content="Maintenance"/>
-            <ComboBoxItem Content="Retired"/>
+			<ComboBoxItem Content="Retired"/>
 
-        </ComboBox>
+		</ComboBox>
 
 		<Button
 			Content="Add Bike"
