@@ -54,28 +54,35 @@
 
             <TextBox
                 x:Name="NoteTextBox"
-                Height="120"
+                Height="40"
                 TextWrapping="Wrap"
-                AcceptsReturn="True"/>
-
-            <TextBlock
-                Text="Cost to repair:"
-                FontWeight="Bold"
-                Margin="0,15,0,5"/>
-
-            <TextBox
-                x:Name="CostTextBox"
-                Width="120"/>
+                AcceptsReturn="True"
+                Width="300"
+                HorizontalAlignment="Left"
+                />
 
             <TextBlock
                 Text="Part needed:"
                 FontWeight="Bold"
-                Margin="0,15,0,5"/>
+                Margin="0,15,0,5"
+                HorizontalAlignment="Left"/>
 
             <TextBox
                 x:Name="PartNeededBox"
-                Height="20"
-                Width="200"/>
+                Width="300"
+                HorizontalAlignment="Left"/>
+
+            <TextBlock
+                Text="Cost to repair:"
+                FontWeight="Bold"
+                Margin="0,15,0,5"
+                HorizontalAlignment="Left"/>
+
+            <TextBox
+                x:Name="CostTextBox"
+                Width="120"
+                HorizontalAlignment="Left"/>
+
 
         </StackPanel>
 

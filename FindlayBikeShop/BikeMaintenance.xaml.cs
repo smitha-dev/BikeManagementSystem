@@ -93,12 +93,17 @@ namespace FindlayBikeShop
                 updateCmd.Parameters.AddWithValue("$bid", bikeID);
                 updateCmd.ExecuteNonQuery();
 
-                var deleteCmd = conn.CreateCommand();
-                deleteCmd.CommandText = @"
-                    DELETE FROM Maintenance
-                    WHERE BikeID = $bikeId ";
-                deleteCmd.Parameters.AddWithValue("$bikeId", bikeID);
-                deleteCmd.ExecuteNonQuery();
+                // update maintenance record to set DateFixed
+                var fixCmd = conn.CreateCommand();
+                fixCmd.CommandText = @"
+                UPDATE Maintenance
+                SET DateFixed = $dateFixed
+                WHERE MaintenanceID = $mid;
+";
+                fixCmd.Parameters.AddWithValue("$dateFixed", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                fixCmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
+
+                fixCmd.ExecuteNonQuery();
 
                 MessageBox.Show("Bike marked as Available!");
                 this.Close();
