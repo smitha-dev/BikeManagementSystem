@@ -1,147 +1,239 @@
-﻿using Microsoft.Data.Sqlite;
-using Microsoft.Win32;
+using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-
 
 namespace FindlayBikeShop
 {
     public partial class BikeDetails : Window
     {
-        private Bike currentBike;
         private string connectionString = "Data Source=BikeDatabase.db";
+        private Bike currentBike;
 
         public BikeDetails(Bike bike)
         {
             InitializeComponent();
-            this.DataContext = bike;
-            currentBike = bike;
 
-            LoadBikePhoto();
+            currentBike = bike;
+            this.DataContext = bike;
+
+            LoadRentalHistory();
+            LoadMaintenanceHistory();
         }
 
+        // ===========================
+        // Navigation buttons
+        // ===========================
         private void Home_Click(object sender, RoutedEventArgs e)
         {
-            var mainWindow = new MainWindow();
-            mainWindow.Show();
+            new MainWindow().Show();
             this.Close();
         }
 
         private void Inventory_Click(object sender, RoutedEventArgs e)
         {
-            var inventoryWindow = new Inventory();
-            inventoryWindow.Show();
+            new Inventory().Show();
             this.Close();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        // ===========================
+        // Rental history
+        // ===========================
+        private void LoadRentalHistory()
         {
-            var maintenanceWindow = new MaintenanceHistory(currentBike.BikeID);
-            maintenanceWindow.Show();
-        }
+            var rentals = new List<RentalRecord>();
 
-        private void UploadPhoto_Click(object sender, RoutedEventArgs e)
-        {
-            try
+            using var conn = new SqliteConnection(connectionString);
+            conn.Open();
+
+            string sql = @"
+                SELECT RentalID, BikeID, StudentID, SemesterRented, Year,
+                       CheckoutDate, DueDate, ReturnDate,
+                       CheckinDate1, CheckinDate2, CheckinDate3
+                FROM Rentals
+                WHERE BikeID = @bikeId
+                ORDER BY CheckoutDate DESC;
+            ";
+
+            using var cmd = new SqliteCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@bikeId", currentBike.BikeID);
+
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                OpenFileDialog dialog = new OpenFileDialog();
-                dialog.Filter = "Image Files (*.png;*.jpg;*.jpeg)|*.png;*.jpg;*.jpeg";
-
-                if (dialog.ShowDialog() == true)
+                rentals.Add(new RentalRecord
                 {
-                    string sourcePath = dialog.FileName;
-
-                    string fileName = "bike_" + DateTime.Now.Ticks +
-                                      System.IO.Path.GetExtension(sourcePath);
-
-                    string folder = System.IO.Path.Combine(
-                        AppDomain.CurrentDomain.BaseDirectory,
-                        "Images",
-                        "BikeDetails"
-                    );
-
-                    if (!System.IO.Directory.Exists(folder))
-                        System.IO.Directory.CreateDirectory(folder);
-
-                    string destinationPath = System.IO.Path.Combine(folder, fileName);
-
-                    System.IO.File.Copy(sourcePath, destinationPath, true);
-
-                    BikeImage.Source = new BitmapImage(new Uri(destinationPath));
-
-                    SaveBikePhoto("Images/BikeDetails/" + fileName);
-                }
+                    RentalID = reader.GetInt32(0),
+                    BikeID = reader.GetInt32(1),
+                    StudentID = reader.IsDBNull(2) ? null : reader.GetString(2),
+                    SemesterRented = reader.IsDBNull(3) ? null : reader.GetString(3),
+                    Year = reader.IsDBNull(4) ? 0 : reader.GetInt32(4),
+                    CheckoutDate = reader.IsDBNull(5) ? null : reader.GetString(5),
+                    DueDate = reader.IsDBNull(6) ? null : reader.GetString(6),
+                    ReturnDate = reader.IsDBNull(7) ? null : reader.GetString(7),
+                    CheckinDate1 = reader.IsDBNull(8) ? null : reader.GetString(8),
+                    CheckinDate2 = reader.IsDBNull(9) ? null : reader.GetString(9),
+                    CheckinDate3 = reader.IsDBNull(10) ? null : reader.GetString(10)
+                });
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error uploading image:\n" + ex.Message);
-            }
+
+            RentalHistoryGrid.ItemsSource = rentals;
         }
 
-        private void SaveBikePhoto(string relativePath)
+        private RentalRecord? GetSelectedRental()
         {
-            using (var connection = new SqliteConnection(connectionString))
-            {
-                connection.Open();
-
-                var command = connection.CreateCommand();
-
-                command.CommandText = @"
-                    INSERT INTO Photos (BikeID, FilePath, PhotoType)
-                    VALUES ($bikeID, $path, 'BikeDetails')
-                ";
-
-                command.Parameters.AddWithValue("$bikeID", currentBike.BikeID);
-                command.Parameters.AddWithValue("$path", relativePath);
-
-                command.ExecuteNonQuery();
-            }
+            return RentalHistoryGrid.SelectedItem as RentalRecord;
         }
 
-        private void LoadBikePhoto()
+        private void EditHistory_Click(object sender, RoutedEventArgs e)
         {
-            using (var connection = new SqliteConnection(connectionString))
+            var selectedRental = GetSelectedRental();
+            if (selectedRental == null)
             {
-                connection.Open();
+                MessageBox.Show("Please select a rental record first.");
+                return;
+            }
 
-                var command = connection.CreateCommand();
+            var editWindow = new EditRentalHistory(selectedRental);
+            bool? result = editWindow.ShowDialog();
+            if (result == true)
+                LoadRentalHistory();
+        }
 
-                command.CommandText = @"
-                    SELECT FilePath
-                    FROM Photos
-                    WHERE BikeID = $id AND PhotoType = 'BikeDetails'
-                    ORDER BY PhotoID DESC
-                    LIMIT 1
-                ";
+        // ===========================
+        // Maintenance history
+        // ===========================
+        private void LoadMaintenanceHistory()
+        {
+            var maintenanceList = new List<MaintenanceRecord>();
 
-                command.Parameters.AddWithValue("$id", currentBike.BikeID);
+            using var conn = new SqliteConnection(connectionString);
+            conn.Open();
 
-                var result = command.ExecuteScalar();
+            string sql = @"
+                SELECT MaintenanceID, BikeID, DateFlagged, DateFixed, Notes, Cost
+                FROM Maintenance
+                WHERE BikeID = @bikeId
+                ORDER BY DateFlagged DESC;
+            ";
 
-                if (result is string path && !string.IsNullOrWhiteSpace(path))
+            using var cmd = new SqliteCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@bikeId", currentBike.BikeID);
+
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                maintenanceList.Add(new MaintenanceRecord
                 {
-                    string fullPath = System.IO.Path.Combine(
-                        AppDomain.CurrentDomain.BaseDirectory,
-                        path
-                    );
-
-                    if (System.IO.File.Exists(fullPath))
-                    {
-                        BikeImage.Source = new BitmapImage(new Uri(fullPath));
-                    }
-                }
+                    MaintenanceID = reader.GetInt32(0),
+                    BikeID = reader.GetInt32(1),
+                    DateFlagged = reader.IsDBNull(2) ? null : reader.GetString(2),
+                    DateFixed = reader.IsDBNull(3) ? null : reader.GetString(3),
+                    Notes = reader.IsDBNull(4) ? null : reader.GetString(4),
+                    Cost = reader.IsDBNull(5) ? 0 : reader.GetDouble(5)
+                });
             }
+
+            MaintenanceHistoryGrid.ItemsSource = maintenanceList;
+        }
+
+        private void OpenMaintenance_Click(object sender, RoutedEventArgs e)
+        {
+            if (MaintenanceHistoryGrid.SelectedItem is MaintenanceRecord selected)
+            {
+                var window = new MaintenanceHistory(selected.MaintenanceID);
+                window.Show();
+                window.Closed += (s, args) => LoadMaintenanceHistory();
+            }
+            else
+            {
+                MessageBox.Show("Please select a maintenance record.");
+            }
+        }
+
+        private void Maintenance_Click(object sender, RoutedEventArgs e)
+        {
+            // Create a new maintenance record
+            int newID = CreateNewMaintenanceRecord(currentBike.BikeID);
+
+            // Open the maintenance window
+            var window = new MaintenanceHistory(newID);
+            window.Show();
+
+            // Refresh the grid after closing
+            window.Closed += (s, args) => LoadMaintenanceHistory();
+
+            // Clear selection so no record is highlighted
+            MaintenanceHistoryGrid.SelectedItem = null;
+
+            // Update button visibility
+            FlagMaintenanceButton.Visibility = Visibility.Visible;
+            OpenMaintenanceButton.Visibility = Visibility.Collapsed;
+
+        }
+
+        private void MaintenanceHistoryGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (MaintenanceHistoryGrid.SelectedItem != null)
+            {
+                // If a record is selected, hide "Flag for Maintenance" and show "Open Maintenance"
+                FlagMaintenanceButton.Visibility = Visibility.Collapsed;
+                OpenMaintenanceButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                // No record selected, show "Flag for Maintenance" and hide "Open Maintenance"
+                FlagMaintenanceButton.Visibility = Visibility.Visible;
+                OpenMaintenanceButton.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private int CreateNewMaintenanceRecord(int bikeID)
+        {
+            using var connection = new SqliteConnection(connectionString);
+            connection.Open();
+
+            var cmd = connection.CreateCommand();
+            cmd.CommandText = @"
+                INSERT INTO Maintenance (BikeID, DateFlagged)
+                VALUES ($bikeId, datetime('now'));
+                SELECT last_insert_rowid();
+            ";
+            cmd.Parameters.AddWithValue("$bikeId", bikeID);
+
+            return Convert.ToInt32(cmd.ExecuteScalar());
+        }
+
+        private void RentBike_Click(object sender, RoutedEventArgs e)
+        {
+            var rentWindow = new EditRentalHistory(currentBike);
+            bool? result = rentWindow.ShowDialog();
+
+            if (result == true)
+            {
+                currentBike.Status = "Rented";
+                currentBike.LastUpdated = DateTime.Now.ToString("yyyy-MM-dd");
+
+                LoadRentalHistory();
+
+                DataContext = null;
+                DataContext = currentBike;
+            }
+        }
+
+        // ===========================
+        // Edit bike details
+        // ===========================
+        private void EditDetails_Click(object sender, RoutedEventArgs e)
+        {
+            var editWindow = new AddBike(currentBike);
+            editWindow.ShowDialog();
+
+            // Refresh page after editing
+            var refreshedWindow = new BikeDetails(currentBike);
+            refreshedWindow.Show();
+            this.Close();
         }
     }
 }

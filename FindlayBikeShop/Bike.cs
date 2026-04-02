@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Media.Imaging;
-
-namespace FindlayBikeShop
+﻿namespace FindlayBikeShop
 {
     public class Bike
     {
         public int BikeID { get; set; }
         public string? Brand { get; set; }
         public string? Size { get; set; }
+        public double SeatHeight { get; set; }
         public string? Color { get; set; }
         public string? Status { get; set; }
         public string? LastUpdated { get; set; }
@@ -32,44 +28,12 @@ namespace FindlayBikeShop
                     parts.Add($"Brand: {Brand}");
                 if (!string.IsNullOrEmpty(Size))
                     parts.Add($"Size: {Size}");
+                if (SeatHeight > 0)
+                    parts.Add($"Seat Height: {SeatHeight}");
                 if (!string.IsNullOrEmpty(Color))
                     parts.Add($"Color: {Color}");
 
                 return string.Join(" - ", parts);
-            }
-        }
-
-        public BitmapImage PhotoImage
-        {
-            get
-            {
-                try
-                {
-                    string basePath = AppDomain.CurrentDomain.BaseDirectory;
-
-                    if (!string.IsNullOrEmpty(Photo))
-                    {
-                        string fullPath = System.IO.Path.Combine(basePath, Photo);
-
-                        if (System.IO.File.Exists(fullPath))
-                        {
-                            return new BitmapImage(new Uri(fullPath));
-                        }
-                    }
-
-                    string defaultPath = System.IO.Path.Combine(basePath, "Images", "default.png");
-
-                    if (System.IO.File.Exists(defaultPath))
-                    {
-                        return new BitmapImage(new Uri(defaultPath));
-                    }
-
-                    return null;
-                }
-                catch
-                {
-                    return null;
-                }
             }
         }
     }

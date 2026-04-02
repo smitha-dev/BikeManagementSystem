@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 Window: BikeDetails
 Purpose: Displays detailed information about a specific bike.
 -->
@@ -26,13 +26,17 @@ Purpose: Displays detailed information about a specific bike.
             <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+
+        <!-- ========================= -->
+        <!-- NAVIGATION BUTTONS        -->
+        <!-- ========================= -->
 
         <Button
             Content="Home"
@@ -51,51 +55,79 @@ Purpose: Displays detailed information about a specific bike.
             VerticalAlignment="Center"
             Click="Inventory_Click"/>
 
-        <Image x:Name="BikeImage" Margin="0,28,13,6" Grid.Row="1"/>
 
+        <!-- BIKE IMAGE -->
+        <Border
+            Grid.Row="1"
+            Grid.Column="0"
+            BorderBrush="LightGray"
+            BorderThickness="1"
+            Padding="10"
+            Margin="0,10,10,10">
+
+            <Image Stretch="Uniform" Source="{Binding Photo}"/>
+        </Border>
+
+
+        <!-- BIKE DETAILS -->
         <StackPanel
             Grid.Row="1"
             Grid.Column="1"
             Margin="10">
 
             <TextBlock
-                Text="Bike Details"
-                FontWeight="Bold"
-                FontSize="14"
-                Margin="0,0,0,10"/>
-
+    Text="Bike Details"
+    FontWeight="Bold"
+    FontSize="14"
+    Margin="0,0,0,10"/>
+            <!-- Bike details queried from the db -->
             <TextBlock Text="{Binding BikeID, StringFormat=Bike ID: {0}}"/>
             <TextBlock Text="{Binding Brand, StringFormat=Brand: {0}}"/>
             <TextBlock Text="{Binding Size, StringFormat=Size: {0}}"/>
+            <TextBlock Text="{Binding SeatHeight, StringFormat=Seat Height: {0} inches}"/>
             <TextBlock Text="{Binding Color, StringFormat=Color: {0}}"/>
             <TextBlock Text="{Binding Status, StringFormat=Current Status: {0}}"/>
             <TextBlock Text="{Binding LastUpdated, StringFormat=Last Updated: {0}}"/>
-            <TextBlock Text="{Binding Notes, StringFormat=Notes: {0}}"/>
+            <Button
+    Content="Upload Photo"
+    Width="120"
+    Margin="0,10,250,0"/>
 
             <Button
-                Content="Upload Photo"
+                Content="Edit Details"
                 Width="120"
-                Margin="0,2,250,0" 
-                Click="UploadPhoto_Click"/>
+                Margin="0,-20,0,0"
+                Click="EditDetails_Click"/>
 
         </StackPanel>
 
-
         <!-- MAINTENANCE HISTORY -->
         <GroupBox
-            Header="Maintenance History"
-            Grid.Row="2"
-            Grid.Column="0"
-            Margin="0,0,10,5">
+    Header="Maintenance History"
+    Grid.Row="2"
+    Grid.Column="0"
+    Margin="0,0,0,5">
 
-            <ListBox d:ItemsSource="{d:SampleData ItemCount=5}"/>
-
-            <!--
-            TODO: Display maintenance records for this bike
-            -->
-
+            <Grid>
+                <DataGrid x:Name="MaintenanceHistoryGrid"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  Margin="5"
+                  VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch"
+                  ScrollViewer.VerticalScrollBarVisibility="Visible"
+                  ScrollViewer.HorizontalScrollBarVisibility="Visible">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Maintenance ID" Binding="{Binding MaintenanceID}" Width="100"/>
+                        <DataGridTextColumn Header="Bike ID" Binding="{Binding BikeID}" Width="80"/>
+                        <DataGridTextColumn Header="Date Flagged" Binding="{Binding DateFlagged}" Width="120"/>
+                        <DataGridTextColumn Header="Date Fixed" Binding="{Binding DateFixed}" Width="120"/>
+                        <DataGridTextColumn Header="Notes" Binding="{Binding Notes}" Width="200"/>
+                        <DataGridTextColumn Header="Cost" Binding="{Binding Cost}" Width="80"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
         </GroupBox>
-
 
         <!-- RENTAL HISTORY -->
         <GroupBox
@@ -104,28 +136,63 @@ Purpose: Displays detailed information about a specific bike.
             Grid.Column="1"
             Margin="0,0,0,5">
 
-            <ListBox d:ItemsSource="{d:SampleData ItemCount=5}"/>
+            <DataGrid x:Name="RentalHistoryGrid"
+          AutoGenerateColumns="False"
+          IsReadOnly="True"
+          Margin="5"
+          VerticalAlignment="Stretch"
+          HorizontalAlignment="Stretch"
+          ScrollViewer.VerticalScrollBarVisibility="Visible"
+          ScrollViewer.HorizontalScrollBarVisibility="Visible">
 
-            <!--
-            TODO: Show past rentals for this bike
-            -->
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Rental ID" Binding="{Binding RentalID}" Width="60"/>
+                    <DataGridTextColumn Header="Student" Binding="{Binding StudentID}" Width="80"/>
+                    <DataGridTextColumn Header="Semester" Binding="{Binding SemesterRented}" Width="80"/>
+                    <DataGridTextColumn Header="Year" Binding="{Binding Year}" Width="40"/>
+                    <DataGridTextColumn Header="Checkout" Binding="{Binding CheckoutDate}" Width="120"/>
+                    <DataGridTextColumn Header="Due" Binding="{Binding DueDate}" Width="120"/>
+                    <DataGridTextColumn Header="Returned" Binding="{Binding ReturnDate}" Width="120"/>
+                </DataGrid.Columns>
+            </DataGrid>
 
         </GroupBox>
 
+        <!-- ACTION BUTTONS -->
         <Button
+             x:Name="FlagMaintenanceButton"
             Content="Flag for Maintenance"
             Grid.Row="3"
             Grid.Column="0"
             Width="150"
-            HorizontalAlignment="Center" Click="Button_Click"/>
+            HorizontalAlignment="Left" Click="Maintenance_Click"
+            Visibility="Visible"/>
+        <Button
+        x:Name="OpenMaintenanceButton"
+        Content="Open Maintenance"
+         Grid.Row="3"
+        Grid.Column="0"    
+        Width="150"
+        HorizontalAlignment="Left"
+        Click="OpenMaintenance_Click"
+        Visibility="Collapsed"/>
 
         <Button
-            Content="Edit History"
-            Grid.Row="3"
-            Grid.Column="1"
-            Width="120"
-            HorizontalAlignment="Center"/>
+        Content="Edit History"
+        Grid.Row="3"
+        Grid.Column="1"
+        Width="120"
+        HorizontalAlignment="Left"
+        Click="EditHistory_Click"
+       />
+
+        <Button
+    Content="Rent Bike"
+    Grid.Row="3"
+    Grid.Column="1"
+    Width="120"
+    HorizontalAlignment="Right"
+    Click="RentBike_Click"/>
 
     </Grid>
-
 </Window>

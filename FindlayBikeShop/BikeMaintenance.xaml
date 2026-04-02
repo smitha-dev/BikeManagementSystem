@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 Window: MaintenanceHistory
 Purpose: Record damage and repair details for a bike.
 -->
@@ -72,7 +72,7 @@ Purpose: Record damage and repair details for a bike.
                 Margin="0,0,0,5"/>
 
             <TextBox
-                x:Name="DescriptionBox"
+                x:Name="NoteTextBox"
                 Height="120"
                 TextWrapping="Wrap"
                 AcceptsReturn="True"/>
@@ -81,42 +81,36 @@ Purpose: Record damage and repair details for a bike.
                 Text="Cost to repair:"
                 FontWeight="Bold"
                 Margin="0,15,0,5"/>
-
             <TextBox
-                x:Name="CostBox"
-                Width="120"/>
-
-            <TextBlock
-                Text="Part needed:"
-                FontWeight="Bold"
-                Margin="0,15,0,5"/>
-
-            <TextBox
-                x:Name="PartNeededBox"
-                Height="20"
-                Width="200"/>
+                 x:Name="CostTextBox"
+                   Width="120"/>
 
         </StackPanel>
 
 
-        <!-- MARK FIXED BUTTON -->
-        <Button
-            Content="Mark as fixed"
-            Grid.Row="1"
-            Grid.ColumnSpan="2"
-            Width="140"
-            Height="30"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Center"/>
+        <!-- BUTTON -->
+        <StackPanel
+    Grid.Row="1"
+    Grid.ColumnSpan="2"
+    Orientation="Horizontal"
+    HorizontalAlignment="Right"
+    VerticalAlignment="Center"
+    Margin="0,0,10,0">
 
-        <Button 
-            Content="Save"
-            Width="100"
-            Height="30"
-            Margin="108,10,172,10"
-            Click="Save_Click"
-            Grid.Column="1"
-            Grid.Row="1"/>
+            <Button
+                Content="Save"
+                Width="100"
+                Height="30"
+                Margin="0,0,10,0"
+                Click="SaveButton_Click"/>
+
+            <Button
+                Content="Mark as fixed"
+                Width="140"
+                Height="30"
+                Click="FixedButton_Click"/>
+
+        </StackPanel>
 
         <!--
         TODO: Mark maintenance record as completed

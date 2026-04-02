@@ -1,18 +1,18 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Media;
-using System;
-using System.Collections.Generic;
 using Microsoft.Data.Sqlite;
-using System.Collections.Generic;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.ComponentModel;
 
 namespace FindlayBikeShop
 {
     public partial class Inventory : Window
     {
         private string connectionString = "Data Source=BikeDatabase.db";
+        private ICollectionView? bikesView;
 
         public Inventory()
         {
@@ -28,20 +28,14 @@ namespace FindlayBikeShop
             {
                 connection.Open();
 
-                string sql = @"
-                    SELECT b.BikeID, b.Brand, b.Size, b.Color, b.Status, b.LastUpdated,
-                           (
-                               SELECT FilePath
-                               FROM Photos
-                               WHERE BikeID = b.BikeID AND PhotoType = 'BikeDetails'
-                               ORDER BY PhotoID DESC 
-                               LIMIT 1
-                           ) AS FilePath
-                    FROM Bikes b
-                    ORDER BY b.BikeID;
-                ";
+                string sql = @"SELECT b.BikeID, b.Brand, b.Size, b.Color, b.Status, b.LastUpdated,
+                                      p.FilePath
+                               FROM Bikes b
+                               LEFT JOIN Photos p ON b.BikeID = p.BikeID
+                               GROUP BY b.BikeID
+                               ORDER BY b.BikeID;";
 
-               using (var cmd = new SqliteCommand(sql, connection))
+                using (var cmd = new SqliteCommand(sql, connection))
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
@@ -63,6 +57,7 @@ namespace FindlayBikeShop
             }
 
             BikesListView.ItemsSource = bikes;
+            bikesView = CollectionViewSource.GetDefaultView(BikesListView.ItemsSource);
         }
 
         private void Home_Click(object sender, RoutedEventArgs e)
@@ -74,6 +69,7 @@ namespace FindlayBikeShop
 
         private void Inventory_Click(object sender, RoutedEventArgs e)
         {
+            // Do nothing since already here
         }
 
         private void AddBike_Click(object sender, RoutedEventArgs e)
@@ -81,6 +77,150 @@ namespace FindlayBikeShop
             var addBikeWindow = new AddBike();
             addBikeWindow.ShowDialog();
             LoadAllBikes();
+        }
+
+        private void RentReturnButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button btn || btn.Tag is not Bike bike)
+                return;
+
+            if (bike.Status == "Available")
+            {
+                var rentWindow = new EditRentalHistory(bike);
+                bool? result = rentWindow.ShowDialog();
+
+                if (result == true)
+                    LoadAllBikes();
+            }
+            else if (bike.Status == "Rented")
+            {
+                RentalRecord? activeRental = GetActiveRentalForBike(bike.BikeID);
+
+                if (activeRental == null)
+                {
+                    MessageBox.Show("No active rental record was found for this bike.");
+                    return;
+                }
+
+                var returnWindow = new EditRentalHistory(activeRental);
+                bool? result = returnWindow.ShowDialog();
+
+                if (result == true)
+                    LoadAllBikes();
+            }
+        }
+
+        private RentalRecord? GetActiveRentalForBike(int bikeId)
+        {
+            using var connection = new SqliteConnection(connectionString);
+            connection.Open();
+
+            string sql = @"
+                SELECT RentalID, BikeID, StudentID, SemesterRented, Year,
+                       CheckoutDate, DueDate, ReturnDate,
+                       CheckinDate1, CheckinDate2, CheckinDate3
+                FROM Rentals
+                WHERE BikeID = @bikeId
+                  AND (ReturnDate IS NULL OR ReturnDate = '')
+                ORDER BY CheckoutDate DESC
+                LIMIT 1;";
+
+            using var cmd = new SqliteCommand(sql, connection);
+            cmd.Parameters.AddWithValue("@bikeId", bikeId);
+
+            using var reader = cmd.ExecuteReader();
+
+            if (reader.Read())
+            {
+                return new RentalRecord
+                {
+                    RentalID = reader.GetInt32(0),
+                    BikeID = reader.GetInt32(1),
+                    StudentID = reader.IsDBNull(2) ? null : reader.GetString(2),
+                    SemesterRented = reader.IsDBNull(3) ? null : reader.GetString(3),
+                    Year = reader.IsDBNull(4) ? 0 : reader.GetInt32(4),
+                    CheckoutDate = reader.IsDBNull(5) ? null : reader.GetString(5),
+                    DueDate = reader.IsDBNull(6) ? null : reader.GetString(6),
+                    ReturnDate = reader.IsDBNull(7) ? null : reader.GetString(7),
+                    CheckinDate1 = reader.IsDBNull(8) ? null : reader.GetString(8),
+                    CheckinDate2 = reader.IsDBNull(9) ? null : reader.GetString(9),
+                    CheckinDate3 = reader.IsDBNull(10) ? null : reader.GetString(10)
+                };
+            }
+
+            return null;
+        }
+
+        private void FilterByStatus(string status)
+        {
+            if (bikesView == null) return;
+
+            bikesView.Filter = obj =>
+            {
+                if (obj is Bike bike)
+                {
+                    if (status == "All")
+                        return bike.Status != "Retired";
+
+                    return bike.Status == status;
+                }
+
+                return false;
+            };
+        }
+
+        private void StatusFilterComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (StatusFilterComboBox.SelectedItem is ComboBoxItem item)
+            {
+                string selectedStatus = item.Content.ToString() ?? "All";
+                FilterByStatus(selectedStatus);
+            }
+        }
+
+        private void BikesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (BikesListView.SelectedItem is Bike selectedBike)
+            {
+                var detailsWindow = new BikeDetails(selectedBike);
+                detailsWindow.Show();
+                this.Close();
+            }
+        }
+    }
+
+    public class StatusToButtonContentConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string? status = value?.ToString();
+
+            if (status == "Rented")
+                return "Return";
+
+            if (status == "Retired")
+                return "Retired";
+
+            return "Rent";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class StatusToIsEnabledConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string? status = value?.ToString();
+            return status != "Maintenance" && status != "Retired";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }
