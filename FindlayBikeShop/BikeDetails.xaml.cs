@@ -10,8 +10,8 @@ namespace FindlayBikeShop
 {
     public partial class BikeDetails : Window
     {
-        private Bike currentBike;
         private string connectionString = "Data Source=BikeDatabase.db";
+        private Bike currentBike;
 
         public BikeDetails(Bike bike)
         {
@@ -22,7 +22,7 @@ namespace FindlayBikeShop
 
             LoadRentalHistory();
             LoadMaintenanceHistory();
-            LoadBikePhoto(); // 👈 added from photo branch
+            LoadBikePhoto();
         }
 
         // ===========================
@@ -114,7 +114,7 @@ namespace FindlayBikeShop
             conn.Open();
 
             string sql = @"
-                SELECT MaintenanceID, BikeID, Notes, Cost, DateFlagged
+                SELECT MaintenanceID, BikeID, DateFlagged, DateFixed, Notes, Cost
                 FROM Maintenance
                 WHERE BikeID = @bikeId
                 ORDER BY DateFlagged DESC;
@@ -130,9 +130,10 @@ namespace FindlayBikeShop
                 {
                     MaintenanceID = reader.GetInt32(0),
                     BikeID = reader.GetInt32(1),
-                    Notes = reader.IsDBNull(2) ? null : reader.GetString(2),
-                    Cost = reader.IsDBNull(3) ? 0 : reader.GetDouble(3),
-                    DateFlagged = reader.IsDBNull(4) ? null : reader.GetString(4)
+                    DateFlagged = reader.IsDBNull(2) ? null : reader.GetString(2),
+                    DateFixed = reader.IsDBNull(3) ? null : reader.GetString(3),
+                    Notes = reader.IsDBNull(4) ? null : reader.GetString(4),
+                    Cost = reader.IsDBNull(5) ? 0 : reader.GetDouble(5)
                 });
             }
 
@@ -198,6 +199,26 @@ namespace FindlayBikeShop
         }
 
         // ===========================
+        // Rent bike
+        // ===========================
+        private void RentBike_Click(object sender, RoutedEventArgs e)
+        {
+            var rentWindow = new EditRentalHistory(currentBike);
+            bool? result = rentWindow.ShowDialog();
+
+            if (result == true)
+            {
+                currentBike.Status = "Rented";
+                currentBike.LastUpdated = DateTime.Now.ToString("yyyy-MM-dd");
+
+                LoadRentalHistory();
+
+                DataContext = null;
+                DataContext = currentBike;
+            }
+        }
+
+        // ===========================
         // Edit bike
         // ===========================
         private void EditDetails_Click(object sender, RoutedEventArgs e)
@@ -211,7 +232,7 @@ namespace FindlayBikeShop
         }
 
         // ===========================
-        // PHOTO FEATURE (merged in)
+        // PHOTO FEATURE
         // ===========================
         private void UploadPhoto_Click(object sender, RoutedEventArgs e)
         {
@@ -253,66 +274,53 @@ namespace FindlayBikeShop
 
         private void SaveBikePhoto(string relativePath)
         {
-            using (var connection = new SqliteConnection(connectionString))
-            {
-                connection.Open();
+            using var connection = new SqliteConnection(connectionString);
+            connection.Open();
 
-                var command = connection.CreateCommand();
+            var command = connection.CreateCommand();
 
-                command.CommandText = @"
-                    INSERT INTO Photos (BikeID, FilePath, PhotoType)
-                    VALUES ($bikeID, $path, 'BikeDetails')
-                ";
+            command.CommandText = @"
+                INSERT INTO Photos (BikeID, FilePath, PhotoType)
+                VALUES ($bikeID, $path, 'BikeDetails')
+            ";
 
-                command.Parameters.AddWithValue("$bikeID", currentBike.BikeID);
-                command.Parameters.AddWithValue("$path", relativePath);
+            command.Parameters.AddWithValue("$bikeID", currentBike.BikeID);
+            command.Parameters.AddWithValue("$path", relativePath);
 
-                command.ExecuteNonQuery();
-            }
+            command.ExecuteNonQuery();
         }
 
         private void LoadBikePhoto()
         {
-            using (var connection = new SqliteConnection(connectionString))
+            using var connection = new SqliteConnection(connectionString);
+            connection.Open();
+
+            var command = connection.CreateCommand();
+
+            command.CommandText = @"
+                SELECT FilePath
+                FROM Photos
+                WHERE BikeID = $id AND PhotoType = 'BikeDetails'
+                ORDER BY PhotoID DESC
+                LIMIT 1
+            ";
+
+            command.Parameters.AddWithValue("$id", currentBike.BikeID);
+
+            var result = command.ExecuteScalar();
+
+            if (result is string path && !string.IsNullOrWhiteSpace(path))
             {
-                connection.Open();
+                string fullPath = System.IO.Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    path
+                );
 
-                var command = connection.CreateCommand();
-
-                command.CommandText = @"
-                    SELECT FilePath
-                    FROM Photos
-                    WHERE BikeID = $id AND PhotoType = 'BikeDetails'
-                    ORDER BY PhotoID DESC
-                    LIMIT 1
-                ";
-
-                command.Parameters.AddWithValue("$id", currentBike.BikeID);
-
-                var result = command.ExecuteScalar();
-
-                if (result is string path && !string.IsNullOrWhiteSpace(path))
+                if (System.IO.File.Exists(fullPath))
                 {
-                    string fullPath = System.IO.Path.Combine(
-                        AppDomain.CurrentDomain.BaseDirectory,
-                        path
-                    );
-
-                    if (System.IO.File.Exists(fullPath))
-                    {
-                        BikeImage.Source = new BitmapImage(new Uri(fullPath));
-                    }
+                    BikeImage.Source = new BitmapImage(new Uri(fullPath));
                 }
             }
         }
-    }
-
-    public class MaintenanceRecord
-    {
-        public int MaintenanceID { get; set; }
-        public int BikeID { get; set; }
-        public string? Notes { get; set; }
-        public double Cost { get; set; }
-        public string? DateFlagged { get; set; }
     }
 }

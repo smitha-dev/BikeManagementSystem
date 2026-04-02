@@ -1,71 +1,77 @@
 <Window
-    x:Class="FindlayBikeShop.AddBike"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Add New Bike"
-    Height="400"
-    Width="400"
-    WindowStartupLocation="CenterScreen">
+        x:Class="FindlayBikeShop.AddBike"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Add New Bike"
+        Height="400"
+        Width="400"
+        WindowStartupLocation="CenterScreen">
 
-	<Grid Margin="15">
+    <Grid Margin="15">
 
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="*"/>
-			<RowDefinition Height="Auto"/>
-		</Grid.RowDefinitions>
+        <!-- Grid layout -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-		<!-- HEADER -->
-		<TextBlock
-            x:Name="BikeHeader"
-            Text="Add New Bike"
-            FontSize="18"
-            FontWeight="Bold"
-            Margin="0,0,0,10"/>
+        <!-- HEADER -->
+        <TextBlock
+                x:Name="BikeHeader"
+                Text="Add New Bike"
+                FontSize="18"
+                FontWeight="Bold"
+                Margin="0,0,0,10"/>
 
-		<!-- FORM -->
-		<StackPanel Grid.Row="1" Margin="0,10,0,10">
+        <!-- FORM -->
+        <StackPanel Grid.Row="1" Margin="0,10,0,10">
 
-			<TextBlock Text="Brand"/>
-			<TextBox x:Name="BrandBox" Margin="0,0,0,10"/>
+            <!-- Brand -->
+            <TextBlock Text="Brand"/>
+            <TextBox x:Name="BrandBox" Margin="0,0,0,10"/>
 
-			<TextBlock Text="Size"/>
-			<ComboBox x:Name="SizeBox" Margin="0,0,0,10">
-				<ComboBoxItem Content="S"/>
-				<ComboBoxItem Content="M"/>
-				<ComboBoxItem Content="L"/>
-			</ComboBox>
+            <!-- Size -->
+            <TextBlock Text="Size"/>
+            <ComboBox x:Name="SizeBox" Margin="0,0,0,10">
+                <ComboBoxItem Content="S"/>
+                <ComboBoxItem Content="M"/>
+                <ComboBoxItem Content="L"/>
+            </ComboBox>
 
-			<TextBlock Text="Seat height in inches"/>
-			<TextBox x:Name="SeatBox" Margin="0,0,0,10"/>
+            <!-- Seat height -->
+            <TextBlock Text="Seat height in inches"/>
+            <TextBox x:Name="SeatBox" Margin="0,0,0,10"/>
 
-			<TextBlock Text="Color"/>
-			<TextBox x:Name="ColorBox" Margin="0,0,0,10"/>
+            <!-- Color -->
+            <TextBlock Text="Color"/>
+            <TextBox x:Name="ColorBox" Margin="0,0,0,10"/>
 
-			<TextBlock Text="Status"/>
-			<ComboBox x:Name="StatusBox" Margin="0,0,0,10">
-				<ComboBoxItem Content="Available"/>
-				<ComboBoxItem Content="Rented"/>
-				<ComboBoxItem Content="Maintenance"/>
-				<ComboBoxItem Content="Retired"/>
-			</ComboBox>
+            <!-- Status -->
+            <TextBlock Text="Status"/>
+            <ComboBox x:Name="StatusBox" Margin="0,0,0,10">
+                <ComboBoxItem Content="Available"/>
+                <ComboBoxItem Content="Rented"/>
+                <ComboBoxItem Content="Maintenance"/>
+                <ComboBoxItem Content="Retired"/>
+            </ComboBox>
 
-		</StackPanel>
+        </StackPanel>
 
-		<!-- BUTTONS -->
-		<StackPanel Grid.Row="2"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right">
+        <!-- BUTTONS -->
+        <StackPanel Grid.Row="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right">
 
-			<Button Content="Cancel"
-                    Width="80"
-                    Margin="0,0,10,0"
-                    Click="Cancel_Click"/>
+            <Button Content="Cancel"
+                        Width="80"
+                        Margin="0,0,10,0"
+                        Click="Cancel_Click"/>
 
-			<Button Content="Save"
-                    Width="80"
-                    Click="Save_Click"/>
-		</StackPanel>
+            <Button Content="Save"
+                        Width="80"
+                        Click="Save_Click"/>
+        </StackPanel>
 
-	</Grid>
+    </Grid>
 </Window>

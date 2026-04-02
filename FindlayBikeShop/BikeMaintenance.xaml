@@ -1,8 +1,3 @@
-<!--
-Window: MaintenanceHistory
-Purpose: Record damage and repair details for a bike.
--->
-
 <Window
     x:Class="FindlayBikeShop.MaintenanceHistory"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -16,78 +11,75 @@ Purpose: Record damage and repair details for a bike.
     Width="600"
     WindowStartupLocation="CenterScreen">
 
-	<Grid Margin="10">
+    <Grid Margin="10">
 
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="200"/>
-			<ColumnDefinition Width="*"/>
-		</Grid.ColumnDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-		<Grid.RowDefinitions>
-			<RowDefinition Height="*"/>
-			<RowDefinition Height="50"/>
-		</Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
 
-		<!-- DAMAGE PHOTO -->
-		<Border
+        <Border
             BorderBrush="LightGray"
             BorderThickness="1"
             Padding="10"
             Margin="0,0,10,0">
 
-			<StackPanel>
+            <StackPanel>
 
-				<Image
+                <Image
                     x:Name="DamagePhoto"
                     Height="200"
                     Stretch="Uniform"/>
 
-				<Button
+                <Button
                     Content="Upload Photo"
                     Width="120"
                     Margin="0,10,0,0"
                     Click="UploadPhoto_Click"/>
 
-			</StackPanel>
-		</Border>
+            </StackPanel>
+        </Border>
 
-		<!-- DAMAGE DETAILS -->
-		<StackPanel Grid.Column="1">
+        <StackPanel Grid.Column="1">
 
-			<TextBlock
+            <TextBlock
                 Text="Description of damage:"
                 FontWeight="Bold"
                 Margin="0,0,0,5"/>
 
-			<TextBox
+            <TextBox
                 x:Name="NoteTextBox"
                 Height="120"
                 TextWrapping="Wrap"
                 AcceptsReturn="True"/>
 
-			<TextBlock
+            <TextBlock
                 Text="Cost to repair:"
                 FontWeight="Bold"
                 Margin="0,15,0,5"/>
 
-			<TextBox
+            <TextBox
                 x:Name="CostTextBox"
                 Width="120"/>
 
-			<TextBlock
+            <TextBlock
                 Text="Part needed:"
                 FontWeight="Bold"
                 Margin="0,15,0,5"/>
 
-			<TextBox
+            <TextBox
                 x:Name="PartNeededBox"
                 Height="20"
                 Width="200"/>
 
-		</StackPanel>
+        </StackPanel>
 
-		<!-- BUTTONS -->
-		<StackPanel
+        <StackPanel
             Grid.Row="1"
             Grid.ColumnSpan="2"
             Orientation="Horizontal"
@@ -95,20 +87,20 @@ Purpose: Record damage and repair details for a bike.
             VerticalAlignment="Center"
             Margin="0,0,10,0">
 
-			<Button
+            <Button
                 Content="Save"
                 Width="100"
                 Height="30"
                 Margin="0,0,10,0"
                 Click="SaveButton_Click"/>
 
-			<Button
+            <Button
                 Content="Mark as fixed"
                 Width="140"
                 Height="30"
                 Click="FixedButton_Click"/>
 
-		</StackPanel>
+        </StackPanel>
 
-	</Grid>
+    </Grid>
 </Window>
