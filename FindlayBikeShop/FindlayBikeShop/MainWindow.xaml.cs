@@ -116,7 +116,7 @@ namespace FindlayBikeShop
 
                 string sql = @"SELECT BikeID, Brand, Size, MaxHeight, MinHeight, Color, Status, LastUpdated
                        FROM Bikes 
-                       WHERE Status = 'Rented' OR Status = 'Retired'
+                       WHERE Status = 'Rented'
                        ORDER BY BikeID;";
 
                 using (var cmd = new SqliteCommand(sql, connection))
