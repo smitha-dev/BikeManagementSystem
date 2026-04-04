@@ -1,0 +1,206 @@
+<!--
+Window: BikeDetails
+Purpose: Displays detailed information about a specific bike.
+-->
+
+<Window
+    x:Class="FindlayBikeShop.BikeDetails"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:FindlayBikeShop"
+    mc:Ignorable="d"
+    Title="Bike Details"
+    Height="510"
+    Width="800"
+    WindowStartupLocation="CenterScreen">
+
+    <Grid Margin="10">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- NAVIGATION BUTTONS -->
+        <Button
+            Content="Maintenance"
+            Width="100"
+            Height="30"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Click="Home_Click"/>
+
+        <Button
+            Content="Inventory"
+            Width="100"
+            Height="30"
+            Margin="130,0,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Click="Inventory_Click"/>
+
+        <!-- BIKE IMAGE -->
+        <Border
+            Grid.Row="1"
+            Grid.Column="0"
+            BorderBrush="LightGray"
+            BorderThickness="1"
+            Padding="10"
+            Margin="0,10,10,10">
+            <Image
+                x:Name="BikeImage"
+                Stretch="Uniform"
+                Source="{Binding PhotoImage}"/>
+        </Border>
+
+        <!-- BIKE DETAILS -->
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="10">
+
+            <TextBlock
+                Text="Bike Details"
+                FontWeight="Bold"
+                FontSize="14"
+                Margin="0,0,0,10"/>
+
+            <TextBlock Text="{Binding BikeID, StringFormat=Bike ID: {0}}"/>
+            <TextBlock Text="{Binding Brand, StringFormat=Brand: {0}}"/>
+            <TextBlock Text="{Binding Size, StringFormat=Size: {0}}"/>
+            <TextBlock>
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="Top Tube: {0}-{1} inches">
+                        <Binding Path="MinHeight" />
+                        <Binding Path="MaxHeight" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+            <TextBlock Text="{Binding Color, StringFormat=Color: {0}}"/>
+            <TextBlock Text="{Binding Status, StringFormat=Current Status: {0}}"/>
+            <TextBlock Text="{Binding LastUpdated, StringFormat=Last Updated: {0}}"/>
+
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <Button
+                    Content="Upload Photo"
+                    Width="120"
+                    Margin="0,0,10,0"
+                    Click="UploadPhoto_Click"/>
+
+                <Button
+                    Content="Edit Details"
+                    Width="120"
+                    Click="EditDetails_Click"/>
+            </StackPanel>
+
+        </StackPanel>
+
+        <!-- MAINTENANCE HISTORY -->
+        <GroupBox
+            Header="Maintenance History"
+            Grid.Row="2"
+            Grid.Column="0"
+            Margin="0,0,5,5">
+
+            <Grid>
+                <DataGrid
+                    x:Name="MaintenanceHistoryGrid"
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True"
+                    Margin="5"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"
+                    ScrollViewer.VerticalScrollBarVisibility="Visible"
+                    ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                    SelectionChanged="MaintenanceHistoryGrid_SelectionChanged">
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Maintenance ID" Binding="{Binding MaintenanceID}" Width="100"/>
+                        <DataGridTextColumn Header="Part Needed" Binding="{Binding PartNeeded}" Width="80"/>
+                        <DataGridTextColumn Header="Notes" Binding="{Binding Notes}" Width="200"/>
+                        <DataGridTextColumn Header="Cost" Binding="{Binding Cost}" Width="80"/>
+                        <DataGridTextColumn Header="Date Flagged" Binding="{Binding DateFlagged}" Width="120"/>
+                        <DataGridTextColumn Header="Date Fixed" Binding="{Binding DateFixed}" Width="120"/>
+                        
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </GroupBox>
+
+        <!-- RENTAL HISTORY -->
+        <GroupBox
+            Header="Rental History"
+            Grid.Row="2"
+            Grid.Column="1"
+            Margin="0,0,0,5">
+
+            <DataGrid
+                x:Name="RentalHistoryGrid"
+                AutoGenerateColumns="False"
+                IsReadOnly="True"
+                Margin="5"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                ScrollViewer.VerticalScrollBarVisibility="Visible"
+                ScrollViewer.HorizontalScrollBarVisibility="Visible">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Rental ID" Binding="{Binding RentalID}" Width="60"/>
+                    <DataGridTextColumn Header="Student" Binding="{Binding StudentID}" Width="80"/>
+                    <DataGridTextColumn Header="Semester" Binding="{Binding SemesterRented}" Width="80"/>
+                    <DataGridTextColumn Header="Year" Binding="{Binding Year}" Width="40"/>
+                    <DataGridTextColumn Header="Checkout" Binding="{Binding CheckoutDate}" Width="120"/>
+                    <DataGridTextColumn Header="Due" Binding="{Binding DueDate}" Width="120"/>
+                    <DataGridTextColumn Header="Returned" Binding="{Binding ReturnDate}" Width="120"/>
+                </DataGrid.Columns>
+
+            </DataGrid>
+        </GroupBox>
+
+        <!-- ACTION BUTTONS -->
+        <Button
+            x:Name="FlagMaintenanceButton"
+            Content="New Maintenance"
+            Grid.Row="3"
+            Grid.Column="0"
+            Width="150"
+            HorizontalAlignment="Left"
+            Click="Maintenance_Click"/>
+
+        <Button
+            x:Name="OpenMaintenanceButton"
+            Content="Edit Maintenance"
+            Grid.Row="3"
+            Grid.Column="0"
+            Width="150"
+            HorizontalAlignment="Left"
+            Click="OpenMaintenance_Click"
+            Visibility="Collapsed"/>
+
+        <Button
+            Content="Edit History"
+            Grid.Row="3"
+            Grid.Column="1"
+            Width="120"
+            HorizontalAlignment="Left"
+            Click="EditHistory_Click"/>
+
+        <Button
+            Content="Rent Bike"
+            Grid.Row="3"
+            Grid.Column="1"
+            Width="120"
+            HorizontalAlignment="Right"
+            Click="RentBike_Click"/>
+
+    </Grid>
+</Window>
