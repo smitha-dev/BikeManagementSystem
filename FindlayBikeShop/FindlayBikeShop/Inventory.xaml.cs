@@ -17,6 +17,7 @@ namespace FindlayBikeShop
         public Inventory()
         {
             InitializeComponent();
+            StatusFilterComboBox.SelectedIndex = 0;
             LoadAllBikes();
         }
 
@@ -55,10 +56,26 @@ namespace FindlayBikeShop
                             Status = reader.IsDBNull(4) ? null : reader.GetString(4),
                             LastUpdated = reader.IsDBNull(5)
                                 ? null
-                                : reader.GetDateTime(5).ToString("yyyy-MM-dd"),
+                                : reader.GetDateTime(5).ToString("MMM-dd-YYYY"),
                             Photo = reader.IsDBNull(6) ? null : reader.GetString(6)
                         });
                     }
+                }
+
+                
+                BikesListView.ItemsSource = bikes;
+
+               
+                bikesView = CollectionViewSource.GetDefaultView(BikesListView.ItemsSource);
+
+                if (StatusFilterComboBox.SelectedItem is ComboBoxItem item)
+                {
+                    string selectedStatus = item.Content.ToString() ?? "All";
+                    FilterByStatus(selectedStatus);
+                }
+                else
+                {
+                    FilterByStatus("All");
                 }
             }
 
@@ -164,10 +181,12 @@ namespace FindlayBikeShop
             {
                 if (obj is Bike bike)
                 {
-                    if (status == "All")
-                        return bike.Status != "Retired";
+                    string bikeStatus = bike.Status?.Trim() ?? "";
 
-                    return bike.Status == status;
+                    if (status == "All")
+                        return !bikeStatus.Equals("Retired", StringComparison.OrdinalIgnoreCase);
+
+                    return bikeStatus.Equals(status, StringComparison.OrdinalIgnoreCase);
                 }
 
                 return false;
