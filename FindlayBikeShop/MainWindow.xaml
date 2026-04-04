@@ -6,146 +6,178 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:FindlayBikeShop"
     mc:Ignorable="d"
-    Title="Findlay Bike Management System [Home]"
-    Height="510"
-    Width="800"
+    Title="Findlay Bike Management System [Maintenance]"
+    Height="675"
+    Width="1100"
+    MinHeight="675"
+    MinWidth="600"
     WindowStartupLocation="CenterScreen">
 
-    <Grid Margin="10">
-
-        <!-- ========================= -->
-        <!-- GRID LAYOUT               -->
-        <!-- ========================= -->
-
+    <!-- ========================== -->
+    <!-- Main page layout -->
+    <!-- ========================== -->
+    <Grid Margin="12">
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        <!-- ========================== -->
+        <!-- Header -->
+        <!-- ========================== -->
 
-        <!-- ========================= -->
-        <!-- NAVIGATION BUTTONS        -->
-        <!-- ========================= -->
+        <Grid Grid.Row="0" Margin="0,0,0,12">
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+    </Grid.ColumnDefinitions>
 
-        <Button
-            Content="Home"
-            Width="100"
-            Height="30"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Center"
-            Click="Home_Click"/>
+    <StackPanel Grid.Column="0">
+        <TextBlock Text="University of Findlay Bike Rentals"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   Foreground="{StaticResource FindlayOrangeBrush}"/>
+        <TextBlock Text="Maintenance Dashboard"
+                   FontSize="14"
+                   Foreground="{StaticResource MutedTextBrush}"/>
+    </StackPanel>
 
-        <Button
-            Content="Inventory"
-            Width="100"
-            Height="30"
-            Margin="130,0,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Center"
-            Click="Inventory_Click"/>
+    <StackPanel Grid.Column="1"
+                Orientation="Horizontal"
+                VerticalAlignment="Center">
+        <Button Content="Inventory"
+                Margin="0,0,10,0"
+                Style="{StaticResource SecondaryButton}"
+                Click="Inventory_Click"/>
+        <Button Content="Maintenance"
+                Click="Home_Click"
+                Style="{StaticResource SecondaryButton}"/>
+    </StackPanel>
+</Grid>
 
-        <!-- ========================= -->
-        <!-- BIKES NEEDING REPAIR      -->
-        <!-- ========================= -->
-        <Label
-            Content="Bikes that need repair"
+        <!-- ========================== -->
+        <!-- Bikes needing repair section -->
+        <!-- ========================== -->
+        <Border
             Grid.Row="1"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Margin="0,5,0,0"/>
+            Style="{StaticResource SectionCard}"
+            Margin="0,0,0,12">
 
-        <!-- ListBox to display -->
-        <ListBox x:Name="BikeNeedToRepair"
-                 Grid.Row="1"
-                 Grid.ColumnSpan="2"
-                 Margin="0,31,0,0"
-                 d:ItemsSource="{d:SampleData ItemCount=5}" SelectionChanged="BikeNeedToRepair_SelectionChanged">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock TextWrapping="Wrap">
-                        <Run Text="Bike ID: "/>
-                        <Run Text="{Binding BikeID, StringFormat={}{0:D3}}"/>
-                        <Run Text="   Notes: "/>
-                        <Run Text="{Binding Notes}"/>
-                        <Run Text="   Last Updated: "/>
-                        <Run Text="{Binding LastUpdated}"/>
-                    </TextBlock>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
+                <Label
+                    Grid.Row="0"
+                    Content="Bikes that need repair"/>
 
-        <!-- ========================= -->
-        <!-- AVAILABLE BIKES           -->
-        <!-- ========================= -->
-        <Label
-            Content="Available bikes"
-            Grid.Row="2"
-            Grid.Column="0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Margin="0,5,0,0"/>
+                <ListBox
+                    x:Name="BikeNeedToRepair"
+                    Grid.Row="1"
+                    d:ItemsSource="{d:SampleData ItemCount=5}"
+                    SelectionChanged="BikeNeedToRepair_SelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock TextWrapping="Wrap" Margin="4">
+                                <Run Text="Bike ID: "/>
+                                <Run Text="{Binding BikeID, StringFormat={}{0:D3}}"/>
+                                <Run Text="   Notes: "/>
+                                <Run Text="{Binding Notes}"/>
+                                <Run Text="   Last Updated: "/>
+                                <Run Text="{Binding LastUpdated}"/>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
 
-        <!-- ListBox to display -->
-        <ListBox x:Name="AvailableBikeList"
-                 Grid.Row="2"
-                 Grid.Column="0"
-                 Margin="0,30,15,0"
-                 d:ItemsSource="{d:SampleData ItemCount=5}" SelectionChanged="AvailableBikeList_SelectionChanged">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock TextWrapping="Wrap">
-                        <Run Text="Bike ID: "/>
-                        <Run Text="{Binding BikeID, StringFormat={}{0:D3}}"/>
-                        <Run Text="   Brand: "/>
-                        <Run Text="{Binding Brand}"/>
-                        <Run Text="   Size: "/>
-                        <Run Text="{Binding Size}"/>
-                        <Run Text="   Color: "/>
-                        <Run Text="{Binding Color}"/>
-                    </TextBlock>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <!-- ========================== -->
+        <!-- Bottom bike status sections -->
+        <!-- ========================== -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
+            <!-- Available bikes section -->
+            <Border
+                Grid.Column="0"
+                Style="{StaticResource SectionCard}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-        <!-- ========================= -->
-        <!-- UNAVAILABLE / RENTED BIKES -->
-        <!-- ========================= -->
+                    <Label
+                        Grid.Row="0"
+                        Content="Available bikes"/>
 
-        <Label
-            Content="Unavailable bikes"
-            Grid.Row="2"
-            Grid.Column="1"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Margin="15,5,0,0"/>
+                    <ListBox
+                        x:Name="AvailableBikeList"
+                        Grid.Row="1"
+                        d:ItemsSource="{d:SampleData ItemCount=5}"
+                        SelectionChanged="AvailableBikeList_SelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock TextWrapping="Wrap" Margin="4">
+                                    <Run Text="Bike ID: "/>
+                                    <Run Text="{Binding BikeID, StringFormat={}{0:D3}}"/>
+                                    <Run Text="   Brand: "/>
+                                    <Run Text="{Binding Brand}"/>
+                                    <Run Text="   Size: "/>
+                                    <Run Text="{Binding Size}"/>
+                                    <Run Text="   Color: "/>
+                                    <Run Text="{Binding Color}"/>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
 
-        <!-- ListBox to display -->
-        <ListBox x:Name="RentedBikeList"
-                 Grid.Row="2"
-                 Grid.Column="1"
-                 Margin="15,30,0,0"
-                 d:ItemsSource="{d:SampleData ItemCount=5}" SelectionChanged="RentedBikeList_SelectionChanged">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock TextWrapping="Wrap">
-                        <Run Text="Bike ID: "/>
-                        <Run Text="{Binding BikeID, StringFormat={}{0:D3}}"/>
-                        <Run Text="   Brand: "/>
-                        <Run Text="{Binding Brand}"/>
-                        <Run Text="   Size: "/>
-                        <Run Text="{Binding Size}"/>
-                        <Run Text="   Color: "/>
-                        <Run Text="{Binding Color}"/>
-                    </TextBlock>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+            <!-- Unavailable bikes section -->
+            <Border
+                Grid.Column="2"
+                Style="{StaticResource SectionCard}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Label
+                        Grid.Row="0"
+                        Content="Unavailable bikes"/>
+
+                    <ListBox
+                        x:Name="RentedBikeList"
+                        Grid.Row="1"
+                        d:ItemsSource="{d:SampleData ItemCount=5}"
+                        SelectionChanged="RentedBikeList_SelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock TextWrapping="Wrap" Margin="4">
+                                    <Run Text="Bike ID: "/>
+                                    <Run Text="{Binding BikeID, StringFormat={}{0:D3}}"/>
+                                    <Run Text="   Brand: "/>
+                                    <Run Text="{Binding Brand}"/>
+                                    <Run Text="   Size: "/>
+                                    <Run Text="{Binding Size}"/>
+                                    <Run Text="   Color: "/>
+                                    <Run Text="{Binding Color}"/>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

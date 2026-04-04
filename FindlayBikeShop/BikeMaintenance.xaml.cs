@@ -100,6 +100,7 @@ namespace FindlayBikeShop
                 SET DateFixed = $dateFixed
                 WHERE MaintenanceID = $mid;
 ";
+                // why are we storing time here
                 fixCmd.Parameters.AddWithValue("$dateFixed", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                 fixCmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
 

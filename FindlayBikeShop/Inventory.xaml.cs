@@ -183,7 +183,7 @@ namespace FindlayBikeShop
             }
         }
 
-        private void BikesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void BikesListView_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (BikesListView.SelectedItem is Bike selectedBike)
             {
@@ -191,6 +191,11 @@ namespace FindlayBikeShop
                 detailsWindow.Show();
                 this.Close();
             }
+        }
+
+        private void Backup_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 
