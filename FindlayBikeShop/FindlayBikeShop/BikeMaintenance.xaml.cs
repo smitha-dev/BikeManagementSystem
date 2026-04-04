@@ -103,36 +103,71 @@ namespace FindlayBikeShop
             using var conn = new SqliteConnection(connectionString);
             conn.Open();
 
+            // 1️⃣ Get BikeID
             var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT BikeID FROM Maintenance WHERE MaintenanceID = $mid";
             cmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
 
             var result = cmd.ExecuteScalar();
-            if (result != null)
+            if (result == null) return;
+
+            int bikeID = Convert.ToInt32(result);
+
+            // 2️⃣ Mark THIS maintenance as fixed
+            var fixCmd = conn.CreateCommand();
+            fixCmd.CommandText = @"
+        UPDATE Maintenance
+        SET DateFixed = $dateFixed
+        WHERE MaintenanceID = $mid;
+    ";
+            fixCmd.Parameters.AddWithValue("$dateFixed", DateTime.Now.ToString("MMM-dd-yyyy HH:mm:ss"));
+            fixCmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
+            fixCmd.ExecuteNonQuery();
+
+            // 3️⃣ 🔥 CHECK if ANY open maintenance still exists
+            var checkCmd = conn.CreateCommand();
+            checkCmd.CommandText = @"
+        SELECT COUNT(*)
+        FROM Maintenance
+        WHERE BikeID = $bikeId
+        AND DateFixed IS NULL;
+    ";
+            checkCmd.Parameters.AddWithValue("$bikeId", bikeID);
+
+            int openCount = Convert.ToInt32(checkCmd.ExecuteScalar());
+
+            // 4️⃣ Update bike status BASED ON RESULT
+            var updateBikeCmd = conn.CreateCommand();
+
+            if (openCount > 0)
             {
-                int bikeID = Convert.ToInt32(result);
-
-                // Update bike status
-                var updateCmd = conn.CreateCommand();
-                updateCmd.CommandText = "UPDATE Bikes SET Status='Available' WHERE BikeID=$bid";
-                updateCmd.Parameters.AddWithValue("$bid", bikeID);
-                updateCmd.ExecuteNonQuery();
-
-                // Update maintenance record to set DateFixed with month name
-                var fixCmd = conn.CreateCommand();
-                fixCmd.CommandText = @"
-                    UPDATE Maintenance
-                    SET DateFixed = $dateFixed
-                    WHERE MaintenanceID = $mid;
-                ";
-                fixCmd.Parameters.AddWithValue("$dateFixed", DateTime.Now.ToString("MMM-dd-yyyy HH:mm:ss"));
-                fixCmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
-                fixCmd.ExecuteNonQuery();
-
-                MessageBox.Show("Bike marked as Available!");
-                this.Close();
+                // ❗ Still has open maintenance
+                updateBikeCmd.CommandText = @"
+            UPDATE Bikes
+            SET Status = 'Maintenance'
+            WHERE BikeID = $bikeId;
+        ";
             }
+            else
+            {
+                // ✅ All maintenance completed
+                updateBikeCmd.CommandText = @"
+            UPDATE Bikes
+            SET Status = 'Available'
+            WHERE BikeID = $bikeId;
+        ";
+            }
+
+            updateBikeCmd.Parameters.AddWithValue("$bikeId", bikeID);
+            updateBikeCmd.ExecuteNonQuery();
+
+            MessageBox.Show(openCount > 0
+                ? "Maintenance updated, but bike still has pending issues."
+                : "Bike is now Available!");
+
+            this.Close();
         }
+        
 
         // ===========================
         // Upload damage photo
