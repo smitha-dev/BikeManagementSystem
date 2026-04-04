@@ -62,9 +62,9 @@ namespace FindlayBikeShop
                 currentBike.Size = reader.GetString(1);
                 currentBike.MaxHeight = reader.GetDouble (2);
                 currentBike.MinHeight = reader.GetDouble(3);
-                currentBike.Color = reader.GetString(3);
-                currentBike.Status = reader.GetString(4);
-                currentBike.LastUpdated = FormatDate(reader.GetString(5));
+                currentBike.Color = reader.GetString(4);
+                currentBike.Status = reader.GetString(5);
+                currentBike.LastUpdated = FormatDate(reader.GetString(6));
             }
         }
 
@@ -188,6 +188,15 @@ namespace FindlayBikeShop
 
         private void OpenMaintenance_Click(object sender, RoutedEventArgs e)
         {
+            if (string.Equals(currentBike.Status, "Rented", StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show("This bike is currently rented. Cannot open maintenance records.",
+                                "Action Blocked",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                return;
+            }
+
             if (MaintenanceHistoryGrid.SelectedItem is MaintenanceRecord selected)
             {
                 var window = new MaintenanceHistory(selected.MaintenanceID);
@@ -202,6 +211,16 @@ namespace FindlayBikeShop
 
         private void Maintenance_Click(object sender, RoutedEventArgs e)
         {
+            if (string.Equals(currentBike.Status, "Rented", StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show("This bike is currently rented. Cannot create maintenance record.",
+                                "Action Blocked",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                return;
+            }
+
+
             int newID = CreateNewMaintenanceRecord(currentBike.BikeID);
 
             var window = new MaintenanceHistory(newID);
@@ -367,7 +386,7 @@ namespace FindlayBikeShop
         // ===========================
         private void UpdateMaintenanceButtonState()
         {
-            bool isRented = currentBike.Status.Equals("Rent", StringComparison.OrdinalIgnoreCase);
+            bool isRented = string.Equals(currentBike.Status, "Rented", StringComparison.OrdinalIgnoreCase);
 
             FlagMaintenanceButton.IsEnabled = !isRented;
             OpenMaintenanceButton.IsEnabled = !isRented;
