@@ -205,10 +205,10 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsHighlighted" Value="True">
-                                <Setter TargetName="ItemBorder" Property="Background" Value="#FFF1E5"/>
+                                <Setter TargetName="ItemBorder" Property="Background" Value="{StaticResource FindlayGrayBrush}"/>
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="ItemBorder" Property="Background" Value="#FFF1E5"/>
+                                <Setter TargetName="ItemBorder" Property="Background" Value="{StaticResource FindlayGrayBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -253,7 +253,7 @@
                     <Setter Property="Background" Value="#FAFAFA"/>
                 </Trigger>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#FFF1E5"/>
+                    <Setter Property="Background" Value="{StaticResource FindlayGrayBrush}"/>
                     <Setter Property="Foreground" Value="{StaticResource FindlayBlackBrush}"/>
                 </Trigger>
             </Style.Triggers>
