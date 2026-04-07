@@ -244,32 +244,54 @@ namespace FindlayBikeShop
         // Delete maintenance record
         // ===========================
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
+{
+    var result = MessageBox.Show(
+        "Are you sure you want to delete this maintenance record?",
+        "Confirm Delete",
+        MessageBoxButton.YesNo,
+        MessageBoxImage.Warning
+    );
+
+    if (result == MessageBoxResult.Yes)
+    {
+        using var conn = new SqliteConnection(connectionString);
+        conn.Open();
+
+        
+        using var transaction = conn.BeginTransaction();
+
+        try
         {
-            var result = MessageBox.Show(
-                "Are you sure you want to delete this maintenance record?",
-                "Confirm Delete",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning
-            );
+            //  Delete related photos FIRST
+            var deletePhotos = conn.CreateCommand();
+            deletePhotos.CommandText = @"
+                DELETE FROM Photos
+                WHERE MaintenanceID = $mid;
+            ";
+            deletePhotos.Parameters.AddWithValue("$mid", currentMaintenanceID);
+            deletePhotos.ExecuteNonQuery();
 
-            if (result == MessageBoxResult.Yes)
-            {
-                using var conn = new SqliteConnection(connectionString);
-                conn.Open();
+            // Then delete maintenance
+            var deleteMaintenance = conn.CreateCommand();
+            deleteMaintenance.CommandText = @"
+                DELETE FROM Maintenance
+                WHERE MaintenanceID = $mid;
+            ";
+            deleteMaintenance.Parameters.AddWithValue("$mid", currentMaintenanceID);
+            deleteMaintenance.ExecuteNonQuery();
 
-                var cmd = conn.CreateCommand();
-                cmd.CommandText = @"
-                    DELETE FROM Maintenance
-                    WHERE MaintenanceID = $mid;
-                ";
-                cmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
-                cmd.ExecuteNonQuery();
+            transaction.Commit();
 
-                MessageBox.Show("Maintenance record deleted!");
-                this.Close();
-            }
+            MessageBox.Show("Maintenance record deleted!");
+            this.Close();
         }
-
+        catch (Exception ex)
+        {
+            transaction.Rollback();
+            MessageBox.Show("Delete failed: " + ex.Message);
+        }
+    }
+}
         // ===========================
         // Helper method for formatting dates
         // ===========================
