@@ -9,7 +9,10 @@ namespace FindlayBikeShop
         public int BikeID { get; set; }
         public string? Brand { get; set; }
         public string? Size { get; set; }
-        public double SeatHeight { get; set; }
+        public double? MaxHeight { get; set; }
+
+        public double? MinHeight { get; set; }
+
         public string? Color { get; set; }
         public string? Status { get; set; }
         public string? LastUpdated { get; set; }
@@ -32,8 +35,10 @@ namespace FindlayBikeShop
                     parts.Add($"Brand: {Brand}");
                 if (!string.IsNullOrEmpty(Size))
                     parts.Add($"Size: {Size}");
-                if (SeatHeight > 0)
-                    parts.Add($"Seat Height: {SeatHeight}");
+                if (MinHeight.HasValue && MinHeight.Value > 0)
+                    parts.Add($"Min Height: {MinHeight.Value}");
+                if (MaxHeight.HasValue && MaxHeight.Value > 0)
+                    parts.Add($"Max Height: {MaxHeight.Value}");
                 if (!string.IsNullOrEmpty(Color))
                     parts.Add($"Color: {Color}");
 
