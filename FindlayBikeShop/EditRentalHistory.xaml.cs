@@ -26,7 +26,6 @@ namespace FindlayBikeShop
 
             currentRental = rental;
             bikeId = rental.BikeID;
-
             LoadRentalIntoForm(rental);
         }
 
@@ -395,5 +394,48 @@ namespace FindlayBikeShop
             errorMessage = string.Join("\n", errors);
             return errors.Count == 0;
         }
+
+        // DELETE BUTTON
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show(
+                "Are you sure you want to delete this rental record?",
+                "Confirm Delete",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning
+            );
+
+            if (result == MessageBoxResult.Yes)
+            {
+                using var conn = new SqliteConnection(connectionString);
+                conn.Open();
+
+                using var transaction = conn.BeginTransaction();
+
+                try
+                {
+                    using var deleteCmd = conn.CreateCommand();
+                    deleteCmd.Transaction = transaction;
+                    deleteCmd.CommandText = @"
+                DELETE FROM Rentals
+                WHERE RentalID = $rid;
+            ";
+                    deleteCmd.Parameters.AddWithValue("$rid", currentRental.RentalID); // use the ID, not the object
+                    deleteCmd.ExecuteNonQuery();
+
+                    transaction.Commit();
+
+                    MessageBox.Show("Rental record deleted!");
+                    DialogResult = true;
+                    this.Close();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    MessageBox.Show("Delete failed: " + ex.Message);
+                }
+            }
+        }
+
     }
 }
