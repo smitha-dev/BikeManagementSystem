@@ -64,6 +64,8 @@ namespace FindlayBikeShop
 
             BikesListView.ItemsSource = bikes;
             bikesView = CollectionViewSource.GetDefaultView(BikesListView.ItemsSource);
+            FilterByStatus("All");
+            StatusFilterComboBox.SelectedIndex = 0;
         }
 
         private void Home_Click(object sender, RoutedEventArgs e)
