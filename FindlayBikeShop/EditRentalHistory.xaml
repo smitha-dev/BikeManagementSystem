@@ -45,11 +45,15 @@
                     <TextBlock Text="Semester Rented"
                                FontWeight="SemiBold"
                                Margin="0,0,0,6"/>
-                    <TextBox x:Name="SemesterBox"
-                             Height="34"
-                             Padding="8,6"
-                             Margin="0,0,0,12"
-                             BorderBrush="{StaticResource FindlayGrayBrush}"/>
+                    <ComboBox x:Name="SemesterBox"
+                              Height="34"
+                              Margin="0,0,0,12"
+                              Padding="8,6"
+                              BorderBrush="{StaticResource FindlayGrayBrush}">
+                        <ComboBoxItem Content="Fall"/>
+                        <ComboBoxItem Content="Spring"/>
+                        <ComboBoxItem Content="Summer"/>
+                    </ComboBox>
 
                     <TextBlock Text="Year"
                                FontWeight="SemiBold"
@@ -60,58 +64,86 @@
                              Margin="0,0,0,12"
                              BorderBrush="{StaticResource FindlayGrayBrush}"/>
 
-                    <TextBlock Text="Checkout Date (MM-DD-YYYY)"
-                               FontWeight="SemiBold"
-                               Margin="0,0,0,6"/>
-                    <TextBox x:Name="CheckoutDateBox"
-                             Height="34"
-                             Padding="8,6"
-                             Margin="0,0,0,12"
-                             BorderBrush="{StaticResource FindlayGrayBrush}"/>
+                    <!-- Dates in 2 columns -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="Due Date (MM-DD-YYYY)"
-                               FontWeight="SemiBold"
-                               Margin="0,0,0,6"/>
-                    <TextBox x:Name="DueDateBox"
-                             Height="34"
-                             Padding="8,6"
-                             Margin="0,0,0,12"
-                             BorderBrush="{StaticResource FindlayGrayBrush}"/>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                    <TextBlock Text="Return Date (MM-DD-YYYY)"
-                               FontWeight="SemiBold"
-                               Margin="0,0,0,6"/>
-                    <TextBox x:Name="ReturnDateBox"
-                             Height="34"
-                             Padding="8,6"
-                             Margin="0,0,0,12"
-                             BorderBrush="{StaticResource FindlayGrayBrush}"/>
+                        <!-- LEFT COLUMN -->
 
-                    <TextBlock Text="Check-in Date 1 (MM-DD-YYYY)"
-                               FontWeight="SemiBold"
-                               Margin="0,0,0,6"/>
-                    <TextBox x:Name="CheckinDate1Box"
-                             Height="34"
-                             Padding="8,6"
-                             Margin="0,0,0,12"
-                             BorderBrush="{StaticResource FindlayGrayBrush}"/>
+                        <!-- Checkout -->
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+               Text="Checkout Date"
+               FontWeight="SemiBold"
+               Margin="0,0,0,6"/>
+                        <DatePicker x:Name="CheckoutDatePicker"
+                Grid.Row="1" Grid.Column="0"
+                Height="34"
+                Margin="0,0,0,12"/>
 
-                    <TextBlock Text="Check-in Date 2 (MM-DD-YYYY)"
-                               FontWeight="SemiBold"
-                               Margin="0,0,0,6"/>
-                    <TextBox x:Name="CheckinDate2Box"
-                             Height="34"
-                             Padding="8,6"
-                             Margin="0,0,0,12"
-                             BorderBrush="{StaticResource FindlayGrayBrush}"/>
+                        <!-- Due Date -->
+                        <TextBlock Grid.Row="2" Grid.Column="0"
+               Text="Due Date"
+               FontWeight="SemiBold"
+               Margin="0,0,0,6"/>
+                        <DatePicker x:Name="DueDatePicker"
+                Grid.Row="3" Grid.Column="0"
+                Height="34"
+                Margin="0,0,0,12"/>
 
-                    <TextBlock Text="Check-in Date 3 (MM-DD-YYYY)"
-                               FontWeight="SemiBold"
-                               Margin="0,0,0,6"/>
-                    <TextBox x:Name="CheckinDate3Box"
-                             Height="34"
-                             Padding="8,6"
-                             BorderBrush="{StaticResource FindlayGrayBrush}"/>
+                        <!-- Return -->
+                        <TextBlock Grid.Row="4" Grid.Column="0"
+               Text="Return Date"
+               FontWeight="SemiBold"
+               Margin="0,0,0,6"/>
+                        <DatePicker x:Name="ReturnDatePicker"
+                Grid.Row="5" Grid.Column="0"
+                Height="34"/>
+
+
+                        <!-- RIGHT COLUMN -->
+
+                        <!-- Check-in 1 -->
+                        <TextBlock Grid.Row="0" Grid.Column="2"
+               Text="Check-in Date 1"
+               FontWeight="SemiBold"
+               Margin="0,0,0,6"/>
+                        <DatePicker x:Name="CheckinDate1Picker"
+                Grid.Row="1" Grid.Column="2"
+                Height="34"
+                Margin="0,0,0,12"/>
+
+                        <!-- Check-in 2 -->
+                        <TextBlock Grid.Row="2" Grid.Column="2"
+               Text="Check-in Date 2"
+               FontWeight="SemiBold"
+               Margin="0,0,0,6"/>
+                        <DatePicker x:Name="CheckinDate2Picker"
+                Grid.Row="3" Grid.Column="2"
+                Height="34"
+                Margin="0,0,0,12"/>
+
+                        <!-- Check-in 3 -->
+                        <TextBlock Grid.Row="4" Grid.Column="2"
+               Text="Check-in Date 3"
+               FontWeight="SemiBold"
+               Margin="0,0,0,6"/>
+                        <DatePicker x:Name="CheckinDate3Picker"
+                Grid.Row="5" Grid.Column="2"
+                Height="34"/>
+                    </Grid>
 
                 </StackPanel>
             </ScrollViewer>

@@ -10,15 +10,21 @@ namespace FindlayBikeShop
     public partial class MaintenanceHistory : Window
     {
         private int currentMaintenanceID;
+        private int currentBikeID;
         private string connectionString = "Data Source=BikeDatabase.db";
-
-        public MaintenanceHistory(int maintenanceID)
+        
+        public MaintenanceHistory(int maintenanceID, int bikeID)
         {
             InitializeComponent();
             currentMaintenanceID = maintenanceID;
+            currentBikeID = bikeID;
             LoadMaintenanceDetails();
         }
 
+
+        // ===========================
+        // Load maintenance record
+        // ===========================
         private void LoadMaintenanceDetails()
         {
             using var conn = new SqliteConnection(connectionString);
@@ -37,14 +43,15 @@ namespace FindlayBikeShop
             {
                 NoteTextBox.Text = reader.IsDBNull(0) ? "" : reader.GetString(0);
                 CostTextBox.Text = reader.IsDBNull(1) ? "0" : reader.GetDouble(1).ToString();
-
-                if (!reader.IsDBNull(2))
-                    PartNeededBox.Text = reader.GetString(2);
+                PartNeededBox.Text = reader.IsDBNull(2) ? "" : reader.GetString(2);
             }
 
             LoadPhotoFromDatabase();
         }
 
+        // ===========================
+        // Save maintenance record
+        // ===========================
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             string note = NoteTextBox.Text;
@@ -66,51 +73,107 @@ namespace FindlayBikeShop
             cmd.Parameters.AddWithValue("$cost", cost);
             cmd.Parameters.AddWithValue("$part", partNeeded);
             cmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
-
             cmd.ExecuteNonQuery();
+
+            // Update bike status to "Maintenance"
+            var getBikeCmd = conn.CreateCommand();
+            getBikeCmd.CommandText = "SELECT BikeID FROM Maintenance WHERE MaintenanceID = $mid";
+            getBikeCmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
+            var result = getBikeCmd.ExecuteScalar();
+
+            if (result != null)
+            {
+                int bikeID = Convert.ToInt32(result);
+                var bikeCmd = conn.CreateCommand();
+                bikeCmd.CommandText = @"
+                    UPDATE Bikes
+                    SET Status = 'Maintenance'
+                    WHERE BikeID = $bikeId;
+                ";
+                bikeCmd.Parameters.AddWithValue("$bikeId", bikeID);
+                bikeCmd.ExecuteNonQuery();
+            }
 
             MessageBox.Show("Saved!");
             this.Close();
         }
 
+        // ===========================
+        // Mark bike as fixed
+        // ===========================
         private void FixedButton_Click(object sender, RoutedEventArgs e)
         {
             using var conn = new SqliteConnection(connectionString);
             conn.Open();
 
+            // Get BikeID
             var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT BikeID FROM Maintenance WHERE MaintenanceID = $mid";
             cmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
 
             var result = cmd.ExecuteScalar();
+            if (result == null) return;
 
-            if (result != null)
+            int bikeID = Convert.ToInt32(result);
+
+            // Mark THIS maintenance as fixed
+            var fixCmd = conn.CreateCommand();
+            fixCmd.CommandText = @"
+        UPDATE Maintenance
+        SET DateFixed = $dateFixed
+        WHERE MaintenanceID = $mid;
+    ";
+            fixCmd.Parameters.AddWithValue("$dateFixed", DateTime.Now.ToString("MMM-dd-yyyy HH:mm:ss"));
+            fixCmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
+            fixCmd.ExecuteNonQuery();
+
+            // CHECK if ANY open maintenance still exists
+            var checkCmd = conn.CreateCommand();
+            checkCmd.CommandText = @"
+        SELECT COUNT(*)
+        FROM Maintenance
+        WHERE BikeID = $bikeId
+        AND DateFixed IS NULL;
+    ";
+            checkCmd.Parameters.AddWithValue("$bikeId", bikeID);
+
+            int openCount = Convert.ToInt32(checkCmd.ExecuteScalar());
+
+            // Update bike status BASED ON RESULT
+            var updateBikeCmd = conn.CreateCommand();
+
+            if (openCount > 0)
             {
-                int bikeID = Convert.ToInt32(result);
-
-                var updateCmd = conn.CreateCommand();
-                updateCmd.CommandText = "UPDATE Bikes SET Status='Available' WHERE BikeID=$bid";
-                updateCmd.Parameters.AddWithValue("$bid", bikeID);
-                updateCmd.ExecuteNonQuery();
-
-                // update maintenance record to set DateFixed
-                var fixCmd = conn.CreateCommand();
-                fixCmd.CommandText = @"
-                UPDATE Maintenance
-                SET DateFixed = $dateFixed
-                WHERE MaintenanceID = $mid;
-";
-                // why are we storing time here
-                fixCmd.Parameters.AddWithValue("$dateFixed", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                fixCmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
-
-                fixCmd.ExecuteNonQuery();
-
-                MessageBox.Show("Bike marked as Available!");
-                this.Close();
+                // Still has open maintenance
+                updateBikeCmd.CommandText = @"
+            UPDATE Bikes
+            SET Status = 'Maintenance'
+            WHERE BikeID = $bikeId;
+        ";
             }
+            else
+            {
+                // All maintenance completed
+                updateBikeCmd.CommandText = @"
+            UPDATE Bikes
+            SET Status = 'Available'
+            WHERE BikeID = $bikeId;
+        ";
+            }
+
+            updateBikeCmd.Parameters.AddWithValue("$bikeId", bikeID);
+            updateBikeCmd.ExecuteNonQuery();
+
+            MessageBox.Show(openCount > 0
+                ? "Maintenance updated, but bike still has pending issues."
+                : "Bike is now Available!");
+
+            this.Close();
         }
 
+        // ===========================
+        // Upload damage photo
+        // ===========================
         private void UploadPhoto_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
@@ -119,13 +182,11 @@ namespace FindlayBikeShop
             if (dialog.ShowDialog() == true)
             {
                 string sourcePath = dialog.FileName;
-                string fileName = "bike_" + DateTime.Now.Ticks + Path.GetExtension(sourcePath);
+                string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+                string fileName = $"bikeID_{currentBikeID}_{timestamp}{Path.GetExtension(sourcePath)}";
 
-                string destinationFolder = Path.Combine(
-                    AppDomain.CurrentDomain.BaseDirectory,
-                    "Images",
-                    "Maintenance"
-                );
+
+                string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "Maintenance");
 
                 if (!Directory.Exists(destinationFolder))
                     Directory.CreateDirectory(destinationFolder);
@@ -134,7 +195,6 @@ namespace FindlayBikeShop
                 File.Copy(sourcePath, destinationPath, true);
 
                 DamagePhoto.Source = new BitmapImage(new Uri(destinationPath));
-
                 SavePhotoPathToDatabase("Images/Maintenance/" + fileName);
             }
         }
@@ -146,12 +206,11 @@ namespace FindlayBikeShop
 
             var cmd = conn.CreateCommand();
             cmd.CommandText = @"
-                INSERT INTO Photos (MaintenanceID, FilePath, PhotoType)
-                VALUES ($mid, $path, 'Maintenance');
+                INSERT INTO Photos (MaintenanceID, BikeID, FilePath, PhotoType)
+                VALUES ($mid, $bikeID, $path, 'Maintenance');
             ";
             cmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
             cmd.Parameters.AddWithValue("$path", relativePath);
-
             cmd.ExecuteNonQuery();
         }
 
@@ -180,5 +239,50 @@ namespace FindlayBikeShop
                     DamagePhoto.Source = new BitmapImage(new Uri(fullPath));
             }
         }
+
+        // ===========================
+        // Delete maintenance record
+        // ===========================
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show(
+                "Are you sure you want to delete this maintenance record?",
+                "Confirm Delete",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning
+            );
+
+            if (result == MessageBoxResult.Yes)
+            {
+                using var conn = new SqliteConnection(connectionString);
+                conn.Open();
+
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = @"
+                    DELETE FROM Maintenance
+                    WHERE MaintenanceID = $mid;
+                ";
+                cmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
+                cmd.ExecuteNonQuery();
+
+                MessageBox.Show("Maintenance record deleted!");
+                this.Close();
+            }
+        }
+
+        // ===========================
+        // Helper method for formatting dates
+        // ===========================
+        private string FormatDate(string? dbDate)
+        {
+            if (string.IsNullOrEmpty(dbDate))
+                return "";
+
+            if (DateTime.TryParse(dbDate, out DateTime parsed))
+                return parsed.ToString("MMM-dd-yyyy"); // Month as short name (Apr, May, etc.)
+
+            return dbDate;
+        }
+
     }
 }

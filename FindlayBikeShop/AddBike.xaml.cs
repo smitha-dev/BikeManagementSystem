@@ -47,7 +47,8 @@ namespace FindlayBikeShop
                 return;
 
             BrandBox.Text = currentBike.Brand;
-            SeatBox.Text = currentBike.SeatHeight.ToString();
+            MaxHeightBox.Text = currentBike.MaxHeight?.ToString() ?? "";
+            MinHeightBox.Text = currentBike.MinHeight?.ToString() ?? "";
             ColorBox.Text = currentBike.Color;
 
             SelectComboBoxItem(SizeBox, currentBike.Size);
@@ -70,8 +71,11 @@ namespace FindlayBikeShop
         // function to save the results of the form to the database
         private void Save_Click(object sender, RoutedEventArgs e)
         {
+
             string brand = BrandBox.Text.Trim();
             string size = (SizeBox.SelectedItem as ComboBoxItem)?.Content.ToString();
+            string minHeightText = MinHeightBox.Text.Trim();
+            string maxHeightText = MaxHeightBox.Text.Trim();
             string color = ColorBox.Text.Trim();
             string status = (StatusBox.SelectedItem as ComboBoxItem)?.Content.ToString();
 
@@ -84,8 +88,15 @@ namespace FindlayBikeShop
             if (SizeBox.SelectedItem == null)
                 errors.Add("Size is required.");
 
-            if (!double.TryParse(SeatBox.Text, out double seatheight))
-                errors.Add("Seat height must be a valid number.");
+            if (!double.TryParse(minHeightText, out double minHeight))
+                errors.Add("Min Height must be a valid number.");
+
+            if (!double.TryParse(maxHeightText, out double maxHeight))
+                errors.Add("Max Height must be a valid number.");
+
+            // check logical range
+            if (errors.Count == 0 && minHeight > maxHeight)
+                errors.Add("Min Height cannot be greater than Max Height.");
 
             if (string.IsNullOrWhiteSpace(color))
                 errors.Add("Color is required.");
@@ -118,7 +129,8 @@ namespace FindlayBikeShop
                         UPDATE Bikes
                         SET Brand = @brand,
                             Size = @size,
-                            SeatHeight = @seatheight,
+                            MaxHeight = @maxheight,
+                            MinHeight = @minheight,
                             Color = @color,
                             Status = @status,
                             LastUpdated = CURRENT_DATE
@@ -128,7 +140,8 @@ namespace FindlayBikeShop
                     {
                         cmd.Parameters.AddWithValue("@brand", brand);
                         cmd.Parameters.AddWithValue("@size", size);
-                        cmd.Parameters.AddWithValue("@seatheight", seatheight);
+                        cmd.Parameters.AddWithValue("@maxheight", maxHeight);
+                        cmd.Parameters.AddWithValue("@minheight", minHeight);
                         cmd.Parameters.AddWithValue("@color", color);
                         cmd.Parameters.AddWithValue("@status", status);
 
@@ -140,7 +153,8 @@ namespace FindlayBikeShop
 
                     currentBike.Brand = brand;
                     currentBike.Size = size;
-                    currentBike.SeatHeight = seatheight;
+                    currentBike.MaxHeight = maxHeight;
+                    currentBike.MinHeight = minHeight;
                     currentBike.Color = color;
                     currentBike.Status = status;
                     currentBike.LastUpdated = DateTime.Now.ToShortDateString();
@@ -153,15 +167,16 @@ namespace FindlayBikeShop
                 {
                     string insertSql = @"
                         INSERT INTO Bikes 
-                        (Brand, Size, SeatHeight, Color, Status, DateAdded, LastUpdated)
+                        (Brand, Size, MaxHeight, MinHeight, Color, Status, DateAdded, LastUpdated)
                         VALUES 
-                        (@brand, @size, @seatheight, @color, @status, CURRENT_DATE, CURRENT_DATE)";
+                        (@brand, @size, @maxheight, @minheight, @color, @status, CURRENT_DATE, CURRENT_DATE)";
 
                     using (var cmd = new SqliteCommand(insertSql, connection))
                     {
                         cmd.Parameters.AddWithValue("@brand", brand);
                         cmd.Parameters.AddWithValue("@size", size);
-                        cmd.Parameters.AddWithValue("@seatheight", seatheight);
+                        cmd.Parameters.AddWithValue("@maxheight", maxHeight);
+                        cmd.Parameters.AddWithValue("@minheight", minHeight);
                         cmd.Parameters.AddWithValue("@color", color);
                         cmd.Parameters.AddWithValue("@status", status);
 
@@ -172,12 +187,12 @@ namespace FindlayBikeShop
                 }
             }
 
-            this.Close();
+            this.DialogResult = true;
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            this.DialogResult = false;
         }
     }
 }

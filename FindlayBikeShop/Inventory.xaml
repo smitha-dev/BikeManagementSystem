@@ -94,11 +94,6 @@
                         <ComboBoxItem Content="Retired"/>
                     </ComboBox>
                 </StackPanel>
-
-                <Button Grid.Column="1"
-                Content="Backup"
-                Style="{StaticResource SecondaryButton}"
-                Click="Backup_Click"/>
             </Grid>
         </Grid>
         <!-- ========================== -->
@@ -178,10 +173,33 @@
         <!-- Footer actions -->
         <!-- ========================== -->
         <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- LEFT SIDE -->
+            <StackPanel Grid.Column="0"
+                Orientation="Horizontal"
+                HorizontalAlignment="Left">
+                <Button
+            Content="Backup"
+            Margin="0,0,10,0"
+            Style="{StaticResource SecondaryButton}"
+            Click="Backup_Click"/>
+
             <Button
-                Content="Add Bike"
-                HorizontalAlignment="Right"
-                Click="AddBike_Click"/>
+            Content="Restore"
+            Style="{StaticResource SecondaryButton}"
+            Click="Restore_Click"/>
+            </StackPanel>
+
+            <!-- RIGHT SIDE -->
+            <Button
+        Grid.Column="1"
+        Content="Add Bike"
+        HorizontalAlignment="Right"
+        Click="AddBike_Click"/>
         </Grid>
     </Grid>
 </Window>

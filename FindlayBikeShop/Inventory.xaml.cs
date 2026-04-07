@@ -195,8 +195,21 @@ namespace FindlayBikeShop
 
         private void Backup_Click(object sender, RoutedEventArgs e)
         {
-
+            BackupHelper.BackupBikeData();
         }
+
+        private void Restore_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show(
+        "Restoring will overwrite your current database and images. Continue?",
+        "Confirm Restore",
+        MessageBoxButton.YesNo,
+        MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+                BackupHelper.RestoreBikeData(); // calls the restore function
+        }
+
     }
 
     public class StatusToButtonContentConverter : IValueConverter
@@ -232,5 +245,7 @@ namespace FindlayBikeShop
         {
             throw new NotImplementedException();
         }
+
     }
+
 }

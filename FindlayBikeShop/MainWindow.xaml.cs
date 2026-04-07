@@ -29,16 +29,18 @@ namespace FindlayBikeShop
             {
                 connection.Open();
 
-                string sql = @"SELECT b.BikeID, b.Brand, b.Size, b.SeatHeight, b.Color, b.Status, b.LastUpdated, m.Notes
-                                FROM Bikes b
-                                LEFT JOIN Maintenance m ON b.BikeID = m.BikeID
-                                WHERE b.Status = 'Maintenance'
-                                  AND m.MaintenanceID = (
-                                      SELECT MAX(MaintenanceID)
-                                      FROM Maintenance
-                                      WHERE BikeID = b.BikeID
-                                  )
-                                ORDER BY b.BikeID;";
+                string sql = @"
+            SELECT b.BikeID, b.Brand, b.Size, b.MinHeight, b.MaxHeight, 
+                   b.Color, b.Status, b.LastUpdated, m.Notes
+            FROM Bikes b
+            LEFT JOIN Maintenance m ON b.BikeID = m.BikeID
+            WHERE b.Status = 'Maintenance'
+              AND m.MaintenanceID = (
+                  SELECT MAX(MaintenanceID)
+                  FROM Maintenance
+                  WHERE BikeID = b.BikeID
+              )
+            ORDER BY b.BikeID;";
 
                 using (var cmd = new SqliteCommand(sql, connection))
                 using (var reader = cmd.ExecuteReader())
@@ -50,15 +52,17 @@ namespace FindlayBikeShop
                             BikeID = reader.GetInt32(0),
                             Brand = reader.IsDBNull(1) ? null : reader.GetString(1),
                             Size = reader.IsDBNull(2) ? null : reader.GetString(2),
-                            SeatHeight = reader.IsDBNull(3) ? 0 : reader.GetDouble(3),
-                            Color = reader.IsDBNull(4) ? null : reader.GetString(4),
-                            Status = reader.IsDBNull(5) ? null : reader.GetString(5),
-                            LastUpdated = reader.IsDBNull(6) ? null : reader.GetDateTime(6).ToString("MM -dd-yyyy"),
-                            Notes = reader.IsDBNull(7) ? null : reader.GetString(7) // maintenance notes
+                            MinHeight = reader.IsDBNull(3) ? null : reader.GetDouble(3),
+                            MaxHeight = reader.IsDBNull(4) ? null : reader.GetDouble(4),
+                            Color = reader.IsDBNull(5) ? null : reader.GetString(5),
+                            Status = reader.IsDBNull(6) ? null : reader.GetString(6),
+                            LastUpdated = reader.IsDBNull(7) ? null : reader.GetString(7),
+                            Notes = reader.IsDBNull(8) ? null : reader.GetString(8)
                         });
                     }
                 }
             }
+
             BikeNeedToRepair.ItemsSource = bikes;
         }
 
@@ -73,10 +77,11 @@ namespace FindlayBikeShop
             {
                 connection.Open();
 
-                string sql = @"SELECT BikeID, Brand, Size, SeatHeight, Color, Status, LastUpdated
-                       FROM Bikes
-                       WHERE Status = 'Available'
-                       ORDER BY BikeID;";
+                string sql = @"
+            SELECT BikeID, Brand, Size, MinHeight, MaxHeight, Color, Status, LastUpdated
+            FROM Bikes
+            WHERE Status = 'Available'
+            ORDER BY BikeID;";
 
                 using (var cmd = new SqliteCommand(sql, connection))
                 using (var reader = cmd.ExecuteReader())
@@ -88,14 +93,16 @@ namespace FindlayBikeShop
                             BikeID = reader.GetInt32(0),
                             Brand = reader.IsDBNull(1) ? null : reader.GetString(1),
                             Size = reader.IsDBNull(2) ? null : reader.GetString(2),
-                            SeatHeight = reader.IsDBNull(3) ? 0 : reader.GetDouble(3),
-                            Color = reader.IsDBNull(4) ? null : reader.GetString(4),
-                            Status = reader.IsDBNull(5) ? null : reader.GetString(5),
-                            LastUpdated = reader.IsDBNull(6) ? null : reader.GetDateTime(6).ToString("MM-dd-yyyy")
+                            MinHeight = reader.IsDBNull(3) ? null : reader.GetDouble(3),
+                            MaxHeight = reader.IsDBNull(4) ? null : reader.GetDouble(4),
+                            Color = reader.IsDBNull(5) ? null : reader.GetString(5),
+                            Status = reader.IsDBNull(6) ? null : reader.GetString(6),
+                            LastUpdated = reader.IsDBNull(7) ? null : reader.GetString(7)
                         });
                     }
                 }
             }
+
             AvailableBikeList.ItemsSource = bikes;
         }
 
@@ -110,10 +117,11 @@ namespace FindlayBikeShop
             {
                 connection.Open();
 
-                string sql = @"SELECT BikeID, Brand, Size, SeatHeight, Color, Status, LastUpdated
-                       FROM Bikes 
-                       WHERE Status = 'Rented' OR Status = 'Retired'
-                       ORDER BY BikeID;";
+                string sql = @"
+            SELECT BikeID, Brand, Size, MinHeight, MaxHeight, Color, Status, LastUpdated
+            FROM Bikes 
+            WHERE Status = 'Rented' OR Status = 'Retired'
+            ORDER BY BikeID;";
 
                 using (var cmd = new SqliteCommand(sql, connection))
                 using (var reader = cmd.ExecuteReader())
@@ -125,14 +133,16 @@ namespace FindlayBikeShop
                             BikeID = reader.GetInt32(0),
                             Brand = reader.IsDBNull(1) ? null : reader.GetString(1),
                             Size = reader.IsDBNull(2) ? null : reader.GetString(2),
-                            SeatHeight = reader.IsDBNull(3) ? 0 : reader.GetDouble(3),
-                            Color = reader.IsDBNull(4) ? null : reader.GetString(4),
-                            Status = reader.IsDBNull(5) ? null : reader.GetString(5),
-                            LastUpdated = reader.IsDBNull(6) ? null : reader.GetDateTime(6).ToString("MM-dd-yyyy")
+                            MinHeight = reader.IsDBNull(3) ? null : reader.GetDouble(3),
+                            MaxHeight = reader.IsDBNull(4) ? null : reader.GetDouble(4),
+                            Color = reader.IsDBNull(5) ? null : reader.GetString(5),
+                            Status = reader.IsDBNull(6) ? null : reader.GetString(6),
+                            LastUpdated = reader.IsDBNull(7) ? null : reader.GetString(7)
                         });
                     }
                 }
             }
+
             RentedBikeList.ItemsSource = bikes;
         }
 

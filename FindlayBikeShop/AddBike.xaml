@@ -53,18 +53,20 @@
                         <ComboBoxItem Content="L"/>
                     </ComboBox>
 
-                    <TextBlock Text="Seat Height (inches)"
+                    <TextBlock Text="Max Height (inches)"
                                FontWeight="SemiBold"
                                Margin="0,0,0,6"/>
-                    <TextBox x:Name="SeatBox"
-                             Height="34"
-                             Padding="8,6"
-                             Margin="0,0,0,12"
-                             BorderBrush="{StaticResource FindlayGrayBrush}"/>
+                    <TextBox x:Name="MaxHeightBox" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Minimum Height (inches)"
+                               FontWeight="SemiBold"
+                               Margin="0,0,0,6"/>
+                    <TextBox x:Name="MinHeightBox" Margin="0,0,0,10"/>
 
                     <TextBlock Text="Color"
                                FontWeight="SemiBold"
                                Margin="0,0,0,6"/>
+                    
                     <TextBox x:Name="ColorBox"
                              Height="34"
                              Padding="8,6"
