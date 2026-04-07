@@ -212,6 +212,11 @@ namespace FindlayBikeShop
                 BackupHelper.RestoreBikeData(); // calls the restore function
         }
 
+        private void BikesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
     }
 
     public class StatusToButtonContentConverter : IValueConverter
