@@ -208,8 +208,15 @@ namespace FindlayBikeShop
         MessageBoxButton.YesNo,
         MessageBoxImage.Warning);
 
-            if (result == MessageBoxResult.Yes)
+            if (result == MessageBoxResult.Yes){
+                 UIHelper.ClearAllImages(this);
                 BackupHelper.RestoreBikeData(); // calls the restore function
+            }
+                  
+                  // Refresh by reopening the window
+                  var newWindow = new Inventory(); // or whatever your window class is
+                  newWindow.Show();
+                  this.Close();
         }
 
         private void BikesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
