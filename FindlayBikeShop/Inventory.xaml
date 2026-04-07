@@ -139,7 +139,6 @@
                                 <Image
                         Height="150"
                         Margin="0,0,0,10"
-                        Stretch="UniformToFill"
                         Source="{Binding PhotoImage}"
                         d:Source="https://www.prioritybicycles.com/cdn/shop/files/600_hero_May2024_1of1.jpg"/>
 
