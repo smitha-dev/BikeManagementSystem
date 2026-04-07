@@ -210,6 +210,7 @@ namespace FindlayBikeShop
                 VALUES ($mid, $bikeID, $path, 'Maintenance');
             ";
             cmd.Parameters.AddWithValue("$mid", currentMaintenanceID);
+            cmd.Parameters.AddWithValue("$bikeID", currentBikeID);
             cmd.Parameters.AddWithValue("$path", relativePath);
             cmd.ExecuteNonQuery();
         }
