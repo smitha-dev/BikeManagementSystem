@@ -294,8 +294,9 @@ namespace FindlayBikeShop
 
             if (dialog.ShowDialog() == true)
             {
-                string fileName = "bike_" + DateTime.Now.Ticks +
-                                  System.IO.Path.GetExtension(dialog.FileName);
+                string sourcepath = dialog.FileName;
+                string timestamp = DateTime.Now.ToString("mm-dd-yyyy_hh-mm-ss");
+                string fileName = $"bike_{currentBike.BikeID}_{timestamp}{System.IO.Path.GetExtension(sourcepath)}";
 
                 string folder = System.IO.Path.Combine(
                     AppDomain.CurrentDomain.BaseDirectory,
