@@ -3,9 +3,30 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Windows;
+using System.Windows.Controls;
+
 
 namespace FindlayBikeShop
 {
+     public static class UIHelper
+ {
+     public static void ClearAllImages(DependencyObject parent)
+     {
+         if (parent == null) return;
+
+         for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+         {
+             var child = VisualTreeHelper.GetChild(parent, i);
+
+             if (child is Image img)
+             {
+                 img.Source = null; // THIS releases the file lock
+             }
+
+             ClearAllImages(child);
+         }
+     }
+ }
     public class BackupHelper
     {
         // Helper to copy folder recursively
