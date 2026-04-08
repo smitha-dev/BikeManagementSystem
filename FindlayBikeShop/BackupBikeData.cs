@@ -1,8 +1,9 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using System;
 using System.IO;
 using System.IO.Compression;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Controls;
 
 
