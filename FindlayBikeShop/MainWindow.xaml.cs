@@ -56,7 +56,7 @@ namespace FindlayBikeShop
                             MaxHeight = reader.IsDBNull(4) ? null : reader.GetDouble(4),
                             Color = reader.IsDBNull(5) ? null : reader.GetString(5),
                             Status = reader.IsDBNull(6) ? null : reader.GetString(6),
-                            LastUpdated = reader.IsDBNull(7) ? null : reader.GetString(7),
+                            LastUpdated = reader.IsDBNull(7) ? null : FormatDate(reader.GetString(7)),
                             Notes = reader.IsDBNull(8) ? null : reader.GetString(8)
                         });
                     }
@@ -193,5 +193,16 @@ namespace FindlayBikeShop
             }
 
         }
+
+          private string FormatDate(string? dbDate)
+          {
+              if (string.IsNullOrEmpty(dbDate))
+                  return "";
+        
+              if (DateTime.TryParse(dbDate, out DateTime parsed))
+                  return parsed.ToString("MMM-dd-yyyy"); // Month as short name (Apr, May, etc.)
+        
+              return dbDate;
+          }
     }
 }
