@@ -61,16 +61,28 @@
 
             <!-- Bike image card -->
             <Border
-                Grid.Column="0"
-                Style="{StaticResource SectionCard}">
+    Grid.Column="0"
+    Height="220"
+    Background="#FAFAFA"
+    BorderBrush="{StaticResource FindlayGrayBrush}"
+    BorderThickness="1"
+    CornerRadius="4">
 
-                <Grid>
-                    <Image
-                        x:Name="BikeImage"
-                        Stretch="Uniform"
-                        Source="{Binding PhotoImage}"/>
-                </Grid>
-            </Border>
+    <Grid>
+        <!-- Placeholder -->
+        <TextBlock Text="No photo uploaded"
+                   Foreground="{StaticResource MutedTextBrush}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Visibility="{Binding PhotoImage, Converter={StaticResource NullToVisibilityConverter}}"/>
+
+        <!-- Image -->
+        <Image
+            x:Name="BikeImage"
+            Stretch="Uniform"
+            Source="{Binding PhotoImage}"/>
+    </Grid>
+</Border>
 
             <!-- Bike details card -->
             <Border
