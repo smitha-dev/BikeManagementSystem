@@ -177,7 +177,7 @@
             Margin="0,8,0,0">
                         <Button
         x:Name="FlagMaintenanceButton"
-        Content="Flag for Maintenance"
+        Content="New Maintenance"
         Width="150"
         Margin="0,0,10,0"
         Click="Maintenance_Click"/>
