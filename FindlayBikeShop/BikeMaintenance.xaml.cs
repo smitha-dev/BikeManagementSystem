@@ -66,7 +66,8 @@ namespace FindlayBikeShop
                 UPDATE Maintenance
                 SET Notes = $note,
                     Cost = $cost,
-                    PartNeeded = $part
+                    PartNeeded = $part,
+                    DateFixed = NULL  
                 WHERE MaintenanceID = $mid;
             ";
             cmd.Parameters.AddWithValue("$note", note);
