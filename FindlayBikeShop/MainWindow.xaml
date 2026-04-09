@@ -179,5 +179,19 @@
                 </Grid>
             </Border>
         </Grid>
+        <Grid Grid.Row="0" Grid.RowSpan="3" HorizontalAlignment="left" VerticalAlignment="Bottom" Margin="0,0,12,12">
+            <StackPanel Orientation="Horizontal">
+                <Button
+                    Content="Backup"
+                    Margin="0,0,10,0"
+                    Style="{StaticResource SecondaryButton}"
+                    Click="Backup_Click"/>
+
+                <Button
+                    Content="Restore"
+                    Style="{StaticResource SecondaryButton}"
+                    Click="Restore_Click"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>
