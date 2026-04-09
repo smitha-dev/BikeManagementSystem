@@ -239,7 +239,7 @@ namespace FindlayBikeShop
             try
             {
                 OpenFileDialog dialog = new OpenFileDialog();
-                dialog.Filter = "Image Files (*.png;*.jpg;*.jpeg)|*.png;*.jpg;*.jpeg";
+                dialog.Filter = "Image Files(*.png; *.jpg; *.jpeg; *.webp)| *.png; *.jpg; *.jpeg; *.webp"; 
 
                 if (dialog.ShowDialog() == true)
                 {
