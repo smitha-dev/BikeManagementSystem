@@ -204,5 +204,88 @@ namespace FindlayBikeShop
         
               return dbDate;
           }
+           private void Backup_Click(object sender, RoutedEventArgs e)
+ {
+     BackupHelper.BackupBikeData();
+ }
+
+ private void Restore_Click(object sender, RoutedEventArgs e)
+ {
+     var result = MessageBox.Show(
+         "Restoring will overwrite your current database and images. Continue?",
+         "Confirm Restore",
+         MessageBoxButton.YesNo,
+         MessageBoxImage.Warning);
+
+     if (result != MessageBoxResult.Yes) return;
+
+     try
+     {
+         // 1. Clear images (release image locks)
+         UIHelper.ClearAllImages(this);
+
+         // 2. Release SQLite locks 
+         SqliteConnection.ClearAllPools();
+         GC.Collect();
+         GC.WaitForPendingFinalizers();
+
+         // 3. Select backup
+         var dialog = new Microsoft.Win32.OpenFileDialog
+         {
+             Filter = "Zip Files (*.zip)|*.zip",
+             Title = "Select a backup to restore"
+         };
+
+         if (dialog.ShowDialog() != true) return;
+
+         string backupPath = dialog.FileName;
+         string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+         string dbPath = Path.Combine(baseDir, "BikeDatabase.db");
+         string imagesPath = Path.Combine(baseDir, "Images");
+
+         // 4. Extract zip to temp folder
+         string tempFolder = Path.Combine(Path.GetTempPath(), "BikeRestore_" + DateTime.Now.Ticks);
+         Directory.CreateDirectory(tempFolder);
+         System.IO.Compression.ZipFile.ExtractToDirectory(backupPath, tempFolder);
+
+         // 5. Release locks AGAIN (extra safe before delete)
+         SqliteConnection.ClearAllPools();
+         GC.Collect();
+         GC.WaitForPendingFinalizers();
+
+         // 6. Delete current database
+         if (File.Exists(dbPath))
+             File.Delete(dbPath);
+
+         // 7. Copy new database
+         string backupDb = Path.Combine(tempFolder, "BikeDatabase.db");
+         if (File.Exists(backupDb))
+             File.Copy(backupDb, dbPath);
+
+         // 8. Restore images
+         string backupImages = Path.Combine(tempFolder, "Images");
+         if (Directory.Exists(backupImages))
+         {
+             if (Directory.Exists(imagesPath))
+                 Directory.Delete(imagesPath, true);
+
+             BackupHelper.CopyDirectory(backupImages, imagesPath);
+         }
+
+         // 9. Clean up
+         Directory.Delete(tempFolder, true);
+
+         MessageBox.Show("Restore completed successfully!");
+
+         // 10. Refresh UI
+         var newWindow = new Inventory();
+         newWindow.Show();
+         this.Close();
+     }
+     catch (Exception ex)
+     {
+         MessageBox.Show($"Restore failed: {ex.Message}");
+     }
+ }
     }
 }
