@@ -333,9 +333,9 @@ namespace FindlayBikeShop
             {
                 errors.Add("Student ID is required.");
             }
-            else if (!Regex.IsMatch(studentId, @"^U\d{6}$"))
+            else if (!Regex.IsMatch(studentId, @"^U\d{7}$"))
             {
-                errors.Add("Student ID must be in the format UXXXXXX (6 digits).");
+                errors.Add("Student ID must be in the format UXXXXXXX (7 digits).");
             }
 
             // Semester
