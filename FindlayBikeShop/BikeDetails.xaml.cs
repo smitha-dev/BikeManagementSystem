@@ -290,7 +290,7 @@ namespace FindlayBikeShop
         private void UploadPhoto_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filter = "Image Files (*.png;*.jpg)|*.png;*.jpg";
+            dialog.Filter = "Image Files(*.png; *.jpg; *.jpeg; *.webp)| *.png; *.jpg; *.jpeg; *.webp";
 
             if (dialog.ShowDialog() == true)
             {
