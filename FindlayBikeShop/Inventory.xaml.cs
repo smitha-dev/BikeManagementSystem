@@ -196,29 +196,7 @@ namespace FindlayBikeShop
             }
         }
 
-        private void Backup_Click(object sender, RoutedEventArgs e)
-        {
-            BackupHelper.BackupBikeData();
-        }
-
-        private void Restore_Click(object sender, RoutedEventArgs e)
-        {
-            var result = MessageBox.Show(
-        "Restoring will overwrite your current database and images. Continue?",
-        "Confirm Restore",
-        MessageBoxButton.YesNo,
-        MessageBoxImage.Warning);
-
-            if (result == MessageBoxResult.Yes){
-                 UIHelper.ClearAllImages(this);
-                BackupHelper.RestoreBikeData(); // calls the restore function
-            }
-                  
-                  // Refresh by reopening the window
-                  var newWindow = new Inventory(); // or whatever your window class is
-                  newWindow.Show();
-                  this.Close();
-        }
+     
 
         private void BikesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
