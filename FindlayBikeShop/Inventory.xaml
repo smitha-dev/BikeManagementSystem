@@ -197,17 +197,7 @@ CornerRadius="4">
             <StackPanel Grid.Column="0"
                 Orientation="Horizontal"
                 HorizontalAlignment="Left">
-                <Button
-            Content="Backup"
-            Margin="0,0,10,0"
-            Style="{StaticResource SecondaryButton}"
-            Click="Backup_Click"/>
-
-            <Button
-            Content="Restore"
-            Style="{StaticResource SecondaryButton}"
-            Click="Restore_Click"/>
-            </StackPanel>
+                
 
             <!-- RIGHT SIDE -->
             <Button
